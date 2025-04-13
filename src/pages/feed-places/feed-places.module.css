@@ -1,0 +1,74 @@
+.feed_places {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.searching_form {
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  display: flex;
+}
+
+.searching_form input {
+  margin-right: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #333;
+  font-size: 14px;
+  padding: 2px 2px;
+  height: 22px;
+}
+
+.searching_form select {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #333;
+  font-size: 14px;
+  padding: 2px 2px;
+  height: 22px;
+}
+
+.searching_form input:focus,
+.searching_form select:focus {
+  outline: none;
+}
+
+.searching_form button {
+  background-color: rgba(29, 155, 240, 1);
+  background-image:"/src/assets/manage_search_Figr_Icon.svg";
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  height: 22px;
+  margin-left: 10px;
+  padding: 2px 10px;
+}
+
+.searching_form button:hover {
+  background-color: #3e8e41;
+}
+
+
+.add_button {
+  background-color:rgba(29, 155, 240, 1);
+  background-image:"/src/assets/add_Figr_Icon.svg";
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  height: 22px;
+  margin-left: 10px;
+  padding: 2px 10px;
+  align-self: flex-end;
+}

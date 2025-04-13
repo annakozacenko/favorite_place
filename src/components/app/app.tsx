@@ -3,6 +3,7 @@ import reactLogo from '../../assets/react.svg'
 import viteLogo from '/vite.svg'
 import styles from './app.module.css';
 import { AppHeader } from '../app-header';
+import { FeedPlaces } from '../../pages/feed-places/feed-places';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -10,18 +11,7 @@ function App() {
   return (
     <>
 <AppHeader />
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+<FeedPlaces />
     </>
   )
 }
