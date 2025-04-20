@@ -10,7 +10,7 @@ export function PlacesInfo() {
         <div className={styles.title}>Chang</div>
         <div className={styles.location}>Chang</div>
       </div>
-      <div className={styles.visits}>5</div>
+      <div className={styles.visits}>5 раз</div>
     </div>
   );
 }

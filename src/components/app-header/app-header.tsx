@@ -6,15 +6,15 @@ export const AppHeader = () => {
         <nav className={styles.menu}>
             <div className={styles.menuItem}>
                 <img className={styles.icon} src="src/assets/add_Figr_Icon.svg" alt="Home" />
-                <div className={styles.navTitle}>Home</div>
+                <div className={styles.navTitle}>Места</div>
             </div>
             <div className={styles.menuItem}>
                 <img className={styles.icon} src="src/assets/add_Figr_Icon.svg" alt="Favorites" />
-                <div className={styles.navTitle}>Favorites</div>
+                <div className={styles.navTitle}>Визиты</div>
             </div>
             <div className={styles.menuItem}>
                 <img className={styles.icon} src="src/assets/add_Figr_Icon.svg" alt="Profile" />
-                <div className={styles.navTitle}>Profile</div>
+                <div className={styles.navTitle}>Профиль</div>
             </div>
         </nav>
     )
