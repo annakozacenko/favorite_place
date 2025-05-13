@@ -16,10 +16,10 @@ function App() {
     <>
 <AppHeader />
 <FeedPlaces />
-<Place/>
+{/* <Place/>
 <Dish/>
 <Visit/>
-<FormOfNewVisit/>
+<FormOfNewVisit/> */}
 
     </>
   )
