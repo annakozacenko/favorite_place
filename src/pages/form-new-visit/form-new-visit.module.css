@@ -1,0 +1,166 @@
+.container {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.searchInputWrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.select,
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  padding-left: 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  background-color: white;
+}
+
+.textarea {
+  padding: 0.75rem;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  gap: 0.5rem;
+}
+
+.buttonPrimary {
+  composes: button;
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.75rem;
+  font-size: 1.125rem;
+}
+
+.buttonPrimary:hover {
+  background-color: #2563eb;
+}
+
+.buttonSecondary {
+  composes: button;
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.buttonSecondary:hover {
+  background-color: #e5e7eb;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.dishItem {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+}
+
+.dishHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.dishTitle {
+  font-weight: 500;
+}
+
+.deleteButton {
+  color: #9ca3af;
+}
+
+.deleteButton:hover {
+  color: #ef4444;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .photoGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.photoItem {
+  aspect-ratio: 1;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.photoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.375rem;
+}

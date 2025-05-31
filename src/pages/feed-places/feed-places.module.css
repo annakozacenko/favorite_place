@@ -15,14 +15,14 @@
   grid-template-columns: repeat(4, 1fr);
   width: 100%;
   gap: 10px;
-  border: 1px solid rgb(149, 146, 146);
+  border: 1px solid rgb(220, 220, 220);
   border-radius: 10px;
   margin: 1.5rem 0;
 }
 
 .searching_form input {
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid #dfdddd;
   border-radius: 4px;
   box-sizing: border-box;
   color: #333;

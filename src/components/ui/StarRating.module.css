@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+}
+
+.starButton {
+  margin-right: 0.25rem;
+  transition: color 0.2s;
+}
+
+.starButton:focus {
+  outline: none;
+}
+
+.starActive {
+  color: #ff7f50; /* coral color */
+}
+
+.starInactive {
+  color: #d1d5db; /* gray-300 */
+}
+
+.rating {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563; /* gray-600 */
+}

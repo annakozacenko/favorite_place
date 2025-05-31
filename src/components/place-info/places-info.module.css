@@ -56,15 +56,28 @@ font-size: 0.875rem;
     line-height: 1.25rem;
         color: #666;
 }
+.title_info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
 .title {
     font-weight: bold;
     font-size: 1.25rem;
     line-height: 1.75rem;
+    color: #1a1a1a;
 }
 
 .location {
 }
 
 .visits {
+}
+
+.line{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
 }

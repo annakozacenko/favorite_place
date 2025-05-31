@@ -2,11 +2,11 @@ import styles from "./feed-places.module.css";
 import { PlacesInfo } from "../../components/place-info/places-info";
 
 const cards = [
-  { title: "Chang", location: "Naberezh", visits: 5 },
-  { title: "Pastabar", location: "Naberezh", visits: 5 },
-  { title: "Shava", location: "Naberezh", visits: 5 },
-  { title: "Phali", location: "Naberezh", visits: 5 },
-  { title: "Teremok", location: "Naberezh", visits: 5 },
+  { title: "Chang", location: "Naberezh", visits: 5 , category: 'итальянская'},
+  { title: "Pastabar", location: "Naberezh", visits: 5 , category: 'французская'},
+  { title: "Shava", location: "Naberezh", visits: 5 , category: 'японская'},
+  { title: "Phali", location: "Naberezh", visits: 5, category: 'итальянская'},
+  { title: "Teremok", location: "Naberezh", visits: 5, category: 'французская'},
 ];
 
 export function FeedPlaces() {
@@ -36,6 +36,7 @@ export function FeedPlaces() {
             title={card.title}
             location={card.location}
             visits={card.visits}
+            category={card.category}
           />)
         })}
       </div>
