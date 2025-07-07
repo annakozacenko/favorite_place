@@ -25,19 +25,19 @@ export function FormOfNewVisit() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Add New Visit</h1>
+      <h1 className={styles.title}>Добавить визит</h1>
       
       <form className={styles.form}>
         {/* Restaurant Selection */}
         <div className={styles.card}>
-          <h2 className={styles.sectionTitle}>Restaurant</h2>
+          <h2 className={styles.sectionTitle}>Ресторан</h2>
           
           <div className={styles.searchInputWrapper}>
             <div className={styles.searchIcon}>
               <Search size={18} />
             </div>
             <select className={styles.select}>
-              <option value="">Select a restaurant</option>
+              <option value="">Выберите ресторан</option>
               {restaurants.map(restaurant => (
                 <option key={restaurant.id} value={restaurant.id}>
                   {restaurant.name} ({restaurant.cuisine})
@@ -52,19 +52,19 @@ export function FormOfNewVisit() {
             className={styles.buttonSecondary}
           >
             <Plus size={18} />
-            Add New Restaurant
+            Добавить новый ресторан
           </button>
         </div>
         
         {/* Visit Details */}
         <div className={styles.card}>
-          <h2 className={styles.sectionTitle}>Visit Details</h2>
+          <h2 className={styles.sectionTitle}>Детали визита</h2>
           
           <div className={styles.grid}>
             {/* Date */}
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="visit-date">
-                Date
+                Дата
               </label>
               <div className={styles.searchInputWrapper}>
                 <div className={styles.searchIcon}>
@@ -78,41 +78,7 @@ export function FormOfNewVisit() {
               </div>
             </div>
             
-            {/* Time */}
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="visit-time">
-                Time
-              </label>
-              <div className={styles.searchInputWrapper}>
-                <div className={styles.searchIcon}>
-                  <Clock size={18} />
-                </div>
-                <input 
-                  type="time" 
-                  id="visit-time"
-                  className={styles.input}
-                />
-              </div>
-            </div>
-            
-            {/* Price Range */}
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="price-range">
-                Price Range
-              </label>
-              <div className={styles.searchInputWrapper}>
-                <div className={styles.searchIcon}>
-                  <DollarSign size={18} />
-                </div>
-                <select id="price-range" className={styles.select}>
-                  <option value="">Select price range</option>
-                  <option value="$">$ (Inexpensive)</option>
-                  <option value="$$">$$ (Moderate)</option>
-                  <option value="$$$">$$$ (Expensive)</option>
-                  <option value="$$$$">$$$$ (Very Expensive)</option>
-                </select>
-              </div>
-            </div>
+          
             
             {/* Companions */}
             <div className={styles.formGroup}>
