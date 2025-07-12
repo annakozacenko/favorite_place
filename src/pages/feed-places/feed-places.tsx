@@ -1,15 +1,11 @@
 import styles from "./feed-places.module.css";
 import { PlacesInfo } from "../../components/place-info/places-info";
+import { useSelector } from "react-redux";
+import { selectPlaces } from "../../store/slices/placesSlice";
 
-const cards = [
-  { title: "Chang", location: "Naberezh", visits: 5 , category: 'итальянская'},
-  { title: "Pastabar", location: "Naberezh", visits: 5 , category: 'французская'},
-  { title: "Shava", location: "Naberezh", visits: 5 , category: 'японская'},
-  { title: "Phali", location: "Naberezh", visits: 5, category: 'итальянская'},
-  { title: "Teremok", location: "Naberezh", visits: 5, category: 'французская'},
-];
 
 export function FeedPlaces() {
+  const places = useSelector(selectPlaces)
   return (
     <div className={styles.feed_places}>
       <h1>Список мест</h1>
@@ -30,10 +26,11 @@ export function FeedPlaces() {
         <button type="submit">Search</button>
       </form>
       <div className={styles.cards}>
-        {cards.map((card, index) => {
+         {/* //? правильно здесь описывать "карточки" или "места" ? стили, перечисление и т.д */}
+        {places.map((card, index) => {
             return (
           <PlacesInfo
-            title={card.title}
+            title={card.name}
             location={card.location}
             visits={card.visits}
             category={card.category}
