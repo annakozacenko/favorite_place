@@ -1,16 +1,16 @@
 import styles from "./feed-places.module.css";
 import { PlacesInfo } from "../../components/place-info/places-info";
 import { useSelector } from "react-redux";
-import { selectPlaces } from "../../store/slices/placesSlice";
+import { filterPlaces, selectPlaces, selectProcessedPlaces } from "../../store/slices/placesSlice";
 
 
 export function FeedPlaces() {
-  const places = useSelector(selectPlaces)
+  const places = useSelector(selectProcessedPlaces)
   return (
     <div className={styles.feed_places}>
       <h1>Список мест</h1>
       <form className={styles.searching_form}>
-        <input type="text" placeholder="Search" />
+        <input type="text" placeholder="Search" onInput={filterPlaces}/>
         <select>
           <option value="Италия">Италия</option>
           <option value="Франция">Франция</option>

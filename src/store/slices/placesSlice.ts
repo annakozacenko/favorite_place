@@ -15,12 +15,14 @@ type TPlacesState = {
   places: TPlace[];
   selectedPlace: TPlace | null;
   favoritePlaces: TPlace[];
+  processedPlaces: TPlace[];
 };
 
 const initialState: TPlacesState = {
   places: placesMocks,
   selectedPlace: null,
   favoritePlaces: [],
+  processedPlaces: placesMocks,
 };
 
 export const placesSlice = createSlice({
@@ -30,6 +32,7 @@ export const placesSlice = createSlice({
     selectPlaces: (state) => state.places,
     selectSelectedPlace: (state) => state.selectedPlace,
     selectFavoritePlaces: (state) => state.favoritePlaces,
+    selectProcessedPlaces: (state) => state.processedPlaces,
   },
   reducers: {
     addPlace: (state, action) => {
@@ -61,10 +64,13 @@ export const placesSlice = createSlice({
     selectPlace: (state, action) => {
       state.selectedPlace = action.payload;
     },
+    filterPlaces: (state, action) => {
+        state.processedPlaces = state.places.filter(place => place.name.toLowerCase().startsWith(action.payload.toLowerCase()))
+    },
   },
 });
 
-export const { addPlace, toggleFavoritePlace, selectPlace } =
+export const { addPlace, toggleFavoritePlace, selectPlace, filterPlaces } =
   placesSlice.actions;
-export const { selectPlaces, selectSelectedPlace, selectFavoritePlaces } =
+export const { selectPlaces, selectSelectedPlace, selectFavoritePlaces, selectProcessedPlaces } =
   placesSlice.selectors;
