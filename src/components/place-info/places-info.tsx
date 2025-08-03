@@ -6,12 +6,14 @@ interface PlacesInfoProps {
   location: string;
   visits: number;
   category: string;
+  rating: number;
 }
 export function PlacesInfo({
   title,
   location,
   visits = 0,
   category,
+  rating
 }: PlacesInfoProps) {
   return (
     <div className={styles.place_info}>
@@ -23,7 +25,7 @@ export function PlacesInfo({
         />
         <div className={styles.rating_value}>
           <img className={styles.star} src="src/assets/star.svg" alt="Home" />
-          <div className={styles.rating}>4.5</div>
+          <div className={styles.rating}>{rating}</div>
         </div>
       </div>
       <div className={styles.text_info}>
