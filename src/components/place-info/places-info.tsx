@@ -1,8 +1,8 @@
 import { CiLocationOn } from "react-icons/ci";
 import styles from "./places-info.module.css";
 import { RxCounterClockwiseClock } from "react-icons/rx";
-import { FaRegHeart } from "react-icons/fa";
-import { selectFavoritePlaceIds, TPlace } from "../../store/slices/placesSlice";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { selectFavoritePlaceIds, toggleFavoritePlace, TPlace } from "../../store/slices/placesSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 
@@ -16,6 +16,17 @@ export function PlacesInfo({
 }: TPlace) {
   const dispatch = useDispatch();
   const favoritePlacesIds = useSelector(selectFavoritePlaceIds);
+  const isFavorite = favoritePlacesIds.includes(id);
+  const handleFavorite = () => {
+    dispatch(toggleFavoritePlace({
+      id,
+      name,
+      location,
+      visits,
+      category,
+      rating
+    }))
+  }
   return (
     <div className={styles.place_info}>
       <div className={styles.rating_info}>
@@ -25,8 +36,12 @@ export function PlacesInfo({
           alt="cafe"
         />
         <div className={styles.rating_value}>
-          <button className={styles.star_button}>
-            <img className={styles.star} src="src/assets/star.svg" alt="Home" />
+          <button className={styles.star_button} onClick={handleFavorite}>
+{isFavorite ? (
+              <FaHeart style={{ color: "gold" }} />
+            ) : (
+              <FaRegHeart style={{ color: "gray" }} />
+            )}
           </button>
           <div className={styles.rating}>{rating}</div>
         </div>
