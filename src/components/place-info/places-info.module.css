@@ -47,6 +47,12 @@ font-size: 0.875rem;
     /* margin-right: 2px; */
 }
 
+.star_button{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
 .text_info{
     padding: 10px;
     display: flex;

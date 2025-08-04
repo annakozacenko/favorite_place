@@ -65,8 +65,6 @@ const applyFiltersAndSort = (state: TPlacesState) => {
     }
   }
 
-
-
   return result;
 };
 
@@ -77,6 +75,8 @@ export const placesSlice = createSlice({
     selectPlaces: (state) => state.places,
     selectSelectedPlace: (state) => state.selectedPlace,
     selectFavoritePlaces: (state) => state.favoritePlaces,
+    selectFavoritePlaceIds: (state) =>
+      state.favoritePlaces.map((place) => place.id),
     selectProcessedPlaces: (state) => state.processedPlaces,
   },
   reducers: {
@@ -107,7 +107,6 @@ export const placesSlice = createSlice({
       }
     },
 
-   
     selectPlace: (state, action) => {
       state.selectedPlace = action.payload;
     },
@@ -124,12 +123,11 @@ export const placesSlice = createSlice({
       state.processedPlaces = applyFiltersAndSort(state);
     },
     clearFilters: (state) => {
-  
-          state.filters = {
+      state.filters = {
         category: null,
-        search: null
-    };
-    state.sort = null;
+        search: null,
+      };
+      state.sort = null;
       state.processedPlaces = [...state.places];
     },
   },
@@ -148,5 +146,6 @@ export const {
   selectPlaces,
   selectSelectedPlace,
   selectFavoritePlaces,
+  selectFavoritePlaceIds,
   selectProcessedPlaces,
 } = placesSlice.selectors;
