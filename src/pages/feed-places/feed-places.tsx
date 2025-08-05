@@ -45,11 +45,12 @@ export function FeedPlaces() {
         </button>
       </form>
       <div className={styles.cards}>
-         {/* //? правильно здесь описывать "карточки" или "места" ? стили, перечисление и т.д */}
         {places.map((card, index) => {
             return (
           <PlacesInfo
-            title={card.name}
+            key={index}
+            id={card.id}
+            name={card.name}
             location={card.location}
             visits={card.visits}
             category={card.category}
