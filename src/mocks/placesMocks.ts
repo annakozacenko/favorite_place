@@ -8,6 +8,7 @@ export const placesMocks: TPlace[] = [
     visits: 5,
     category: "итальянская",
     rating: 4.5,
+    notes: "notes",
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ export const placesMocks: TPlace[] = [
     visits: 4,
     category: "французская",
     rating: 4.2,
+    notes: "notes",
   },
   {
     id: 3,
@@ -24,6 +26,7 @@ export const placesMocks: TPlace[] = [
     visits: 3,
     category: "японская",
     rating: 4.7,
+    notes: "notes",
   },
   {
     id: 4,
@@ -32,6 +35,7 @@ export const placesMocks: TPlace[] = [
     visits: 2,
     category: "итальянская",
     rating: 4.4,
+    notes: "notes",
   },
   {
     id: 5,
@@ -40,5 +44,9 @@ export const placesMocks: TPlace[] = [
     visits: 1,
     category: "французская",
     rating: 4.3,
+    notes: "notes",
   },
 ];
+
+
+export const categoriesMocks = ["итальянская", "французская", "японская", "китайская", "мексиканская", "восточная", "азиатская", "индийская", "другая"];

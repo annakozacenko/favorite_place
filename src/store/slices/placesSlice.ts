@@ -8,6 +8,7 @@ export type TPlace = {
   visits: number;
   category: string;
   rating: number;
+  notes: string;
 };
 
 type TPlacesState = {

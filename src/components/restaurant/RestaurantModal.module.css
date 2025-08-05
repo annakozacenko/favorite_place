@@ -69,6 +69,14 @@
   background-color: white;
 }
 
+.select {
+    width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  background-color: white;
+}
+
 .inputWithIcon {
   composes: input;
   padding-left: 2.5rem;

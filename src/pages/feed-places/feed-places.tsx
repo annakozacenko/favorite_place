@@ -1,8 +1,9 @@
 import styles from "./feed-places.module.css";
 import { PlacesInfo } from "../../components/place-info/places-info";
 import { useDispatch, useSelector } from "react-redux";
-import {  searchPlacesByName, selectPlaces, selectProcessedPlaces, sortPlaces, filterPlacesByCategory } from "../../store/slices/placesSlice";
+import {  searchPlacesByName, selectProcessedPlaces, sortPlaces, filterPlacesByCategory } from "../../store/slices/placesSlice";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { categoriesMocks } from "../../mocks/placesMocks";
 
 
 
@@ -26,13 +27,9 @@ export function FeedPlaces() {
         <input type="text" placeholder="Поиск" onInput={handleSearch}/>
         <select onChange={handleFilter}>
           <option value="">Все категории</option>
-          <option value="итальянская">итальянская</option>
-          <option value="японская">японская</option>
-          <option value="французская">французская</option>
-          <option value="мексиканская">мексиканская</option>
-          <option value="восточная">восточная</option>
-          <option value="азиатская">азиатская</option>
-          <option value="другая">другая</option>
+          {categoriesMocks.map((category) => {
+            return <option value={category}>{category}</option>
+          })}
         </select>
         <select onChange={handleSort}>
           <option value="visitsHigh">Часто посещаемые</option>

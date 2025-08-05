@@ -3,7 +3,7 @@ import { VisitInfo } from "../../components/visit-info/visit-info";
 import styles from "./place.module.css";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {  RootState, selectSelectedPlace } from "../../store/slices/placesSlice";
+import {  selectSelectedPlace } from "../../store/slices/placesSlice";
 
 export function Place() {
   //? ввела реакт роутер, но не знаю, как применить
