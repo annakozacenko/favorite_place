@@ -25,7 +25,7 @@ export function PlacesInfo({
 
 
   // подписываемся только на конкретный id
-  const isFavorite = useSelector(selectIsPlaceFavorite(id));
+const isFavorite = useSelector((state) => selectIsPlaceFavorite(state, id));
 
 
   const handleFavorite = (e: React.MouseEvent) => {

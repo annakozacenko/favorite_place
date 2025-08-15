@@ -42,8 +42,8 @@ export const dishesSlice = createSlice({
 export const { addDish } = dishesSlice.actions;
 export const { selectDishes } = dishesSlice.selectors;
 
-export const selectDishesByPlaceId = (placeId: number) =>
+export const selectDishesByPlaceId =
   createSelector(
-    (state: { dishes: TDishesState }) => state.dishes.dishes,
-    (dishes) => dishes.filter((dish) => dish.placeId === placeId)
+    [(state: { dishes: TDishesState }) => state.dishes.dishes, (_, placeId: number) => placeId],
+    (dishes, placeId) => dishes.filter((dish) => dish.placeId === placeId)
   );

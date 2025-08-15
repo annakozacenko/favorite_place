@@ -23,7 +23,7 @@ export function FormOfNewVisit() {
 
   const restaurants = useSelector(selectPlaces);
 
-  const [selectedRestaurant, setSelectedRestaurant] = useState<number | null>(
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<number | null>(
     null
   );
   // const [selectedDish, setSelectedDish] = useState(null);
@@ -31,8 +31,8 @@ export function FormOfNewVisit() {
   // Получаем блюда только для выбранного ресторана
 
 const dishes = useSelector((state) =>
-  selectedRestaurant !== null
-    ? selectDishesByPlaceId(selectedRestaurant)
+  selectedRestaurantId !== null
+    ? selectDishesByPlaceId(state, selectedRestaurantId)
     : () => []
 );
 
@@ -58,10 +58,10 @@ const dishes = useSelector((state) =>
               <Search size={18} />
             </div>
             <select
-              value={selectedRestaurant ?? ""}
+              value={selectedRestaurantId ?? ""}
               onChange={(e) => {
                 const value = e.target.value;
-                setSelectedRestaurant(value ? Number(value) : null);
+                setSelectedRestaurantId(value ? Number(value) : null);
               }}
               className={styles.select}
             >

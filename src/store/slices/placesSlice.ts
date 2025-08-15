@@ -155,10 +155,10 @@ export const {
   selectProcessedPlaces,
 } = placesSlice.selectors;
 
-export const selectIsPlaceFavorite = (id: number) =>
+export const selectIsPlaceFavorite =
   createSelector(
-    (state: { places: TPlacesState }) => state.places.favoritePlaces,
-    (favoritePlaces) => favoritePlaces.some((place) => place.id === id)
+    [(state: { places: TPlacesState }) => state.places.favoritePlaces, (_, id: number) => id],
+    (favoritePlaces, id) => favoritePlaces.some((place) => place.id === id)
   );
 
 // export const selectPlacesNamesWithCategories = createSelector(
