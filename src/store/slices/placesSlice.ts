@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { placesMocks } from "../../mocks/placesMocks";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { generateNumericId, placesMocks } from "../../mocks/placesMocks";
 
 export type TPlace = {
   id: number;
@@ -91,7 +91,11 @@ export const placesSlice = createSlice({
         return;
         //? стоит ли добавлять ошибку о существующем месте
       } else {
-        state.places.push(action.payload);
+        const newPlace = {
+          ...action.payload,
+          id: generateNumericId(),
+        };
+        state.places.push(newPlace);
         state.processedPlaces = applyFiltersAndSort(state);
       }
     },
@@ -150,3 +154,14 @@ export const {
   selectFavoritePlaceIds,
   selectProcessedPlaces,
 } = placesSlice.selectors;
+
+export const selectIsPlaceFavorite = (id: number) =>
+  createSelector(
+    (state: { places: TPlacesState }) => state.places.favoritePlaces,
+    (favoritePlaces) => favoritePlaces.some((place) => place.id === id)
+  );
+
+// export const selectPlacesNamesWithCategories = createSelector(
+//   (state: { places: TPlacesState }) => state.places.places,
+//   (places) => places.map((place) => `${place.name} (${place.category})`)
+// );

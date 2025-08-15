@@ -3,6 +3,7 @@ import styles from "./places-info.module.css";
 import { RxCounterClockwiseClock } from "react-icons/rx";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import {
+  selectIsPlaceFavorite,
   selectFavoritePlaceIds,
   selectPlace,
   toggleFavoritePlace,
@@ -17,14 +18,15 @@ export function PlacesInfo({
   location,
   visits = 0,
   category,
-  rating,
+  rating
 }: TPlace) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //? мне не нравится такая логика. Она приведет к множественным перерендерам всех карточек при добавлении карточки в избранное
-  const favoritePlacesIds = useSelector(selectFavoritePlaceIds);
-  const isFavorite = favoritePlacesIds.includes(id);
+
+  // подписываемся только на конкретный id
+  const isFavorite = useSelector(selectIsPlaceFavorite(id));
+
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();

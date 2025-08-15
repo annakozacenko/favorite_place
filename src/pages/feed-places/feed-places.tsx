@@ -45,14 +45,13 @@ export function FeedPlaces() {
         {places.map((card, index) => {
             return (
           <PlacesInfo
-            key={index}
-            id={card.id}
-            name={card.name}
-            location={card.location}
-            visits={card.visits}
-            category={card.category}
-            rating={card.rating}
-          />)
+                key={index}
+                id={card.id}
+                name={card.name}
+                location={card.location}
+                visits={card.visits}
+                category={card.category}
+                rating={card.rating} notes={""}          />)
         })}
       </div>
       <button className={styles.add_button}>+</button>
