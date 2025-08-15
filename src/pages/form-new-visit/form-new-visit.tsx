@@ -30,11 +30,16 @@ export function FormOfNewVisit() {
 
   // Получаем блюда только для выбранного ресторана
 
-const dishes = useSelector((state) =>
+const dishesл = useSelector((state) =>
   selectedRestaurantId !== null
     ? selectDishesByPlaceId(state, selectedRestaurantId)
     : () => []
 );
+
+const dishes = useSelector((state) =>
+  selectedRestaurantId !== null ? selectDishesByPlaceId(state, selectedRestaurantId) : []
+);
+
 
   const dishes3 = [
     { id: "1", name: "Margherita Pizza", restaurant: "Bella Italia" },
