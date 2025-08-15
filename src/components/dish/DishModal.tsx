@@ -1,103 +1,68 @@
-import { X } from 'lucide-react';
-import styles from './DishModal.module.css';
+import { X } from "lucide-react";
+import styles from "./DishModal.module.css";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { addDish } from "../../store/slices/dishesSlice";
 
 type DishModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  placeId: number;
 };
 
-export function DishModal  ({ isOpen, onClose }: DishModalProps)  {
+export function DishModal({ isOpen, onClose, placeId }: DishModalProps) {
   if (!isOpen) return null;
 
-  // This would come from your data source in a real app
-  const restaurants = [
-    { id: '1', name: 'Bella Italia' },
-    { id: '2', name: 'Sakura Sushi' },
-    { id: '3', name: 'Le Bistro' },
-  ];
+  const dispatch = useDispatch();
+
+  const [name, setName] = useState("");
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(
+      addDish({
+        name,
+        placeId,
+      })
+    );
+    onClose();
+  };
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Add New Dish</h2>
-          <button 
-            onClick={onClose}
-            className={styles.closeButton}
-          >
+          <h2 className={styles.title}>Добавить блюдо</h2>
+          <button onClick={onClose} className={styles.closeButton}>
             <X size={20} />
           </button>
         </div>
-        
+
         <div className={styles.content}>
           <form className={styles.form}>
-            {/* Dish Name */}
+            {/* Название */}
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="dish-name">
-                Dish Name*
+                Название*
               </label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="dish-name"
-                required 
+                required
                 className={styles.input}
-                placeholder="e.g., Margherita Pizza"
+                placeholder="Введите название блюда"
               />
             </div>
-            
-            {/* Restaurant */}
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="restaurant">
-                Restaurant*
-              </label>
-              <select id="restaurant" required className={styles.select}>
-                <option value="">Select a restaurant</option>
-                {restaurants.map(restaurant => (
-                  <option key={restaurant.id} value={restaurant.id}>
-                    {restaurant.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            {/* Category */}
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="category">
-                Category
-              </label>
-              <input 
-                type="text" 
-                id="category"
-                className={styles.input}
-                placeholder="e.g., Appetizer, Main Course, Dessert"
-              />
-            </div>
-            
-            {/* Description */}
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="description">
-                Description
-              </label>
-              <textarea 
-                id="description"
-                placeholder="Describe the dish..." 
-                className={styles.textarea}
-              ></textarea>
-            </div>
-            
+
             <div className={styles.footer}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={onClose}
                 className={styles.buttonSecondary}
               >
-                Cancel
+                Отменить
               </button>
-              <button 
-                type="submit"
-                className={styles.buttonPrimary}
-              >
-                Add Dish
+              <button type="submit" className={styles.buttonPrimary}>
+                Добавить
               </button>
             </div>
           </form>
@@ -105,4 +70,4 @@ export function DishModal  ({ isOpen, onClose }: DishModalProps)  {
       </div>
     </div>
   );
-};
+}

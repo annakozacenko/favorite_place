@@ -64,7 +64,7 @@ export const dishesMocks: TDish[] = [
   { id: 5, name: "Coq au Vin", placeId: 3, rating: 4.3, notes: "notes" }
 ];
 
-export const categoriesMocks = [
+export enum TCategories { 
   "итальянская",
   "французская",
   "японская",
@@ -74,4 +74,6 @@ export const categoriesMocks = [
   "азиатская",
   "индийская",
   "другая",
-];
+}
+
+export const  categoriesMocks = Object.values(TCategories);

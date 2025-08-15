@@ -3,7 +3,7 @@ import { PlacesInfo } from "../../components/place-info/places-info";
 import { useDispatch, useSelector } from "react-redux";
 import {  searchPlacesByName, selectProcessedPlaces, sortPlaces, filterPlacesByCategory } from "../../store/slices/placesSlice";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { categoriesMocks } from "../../mocks/placesMocks";
+import { categoriesMocks } from "../../mocks/mocks";
 
 
 
@@ -27,8 +27,8 @@ export function FeedPlaces() {
         <input type="text" placeholder="Поиск" onInput={handleSearch}/>
         <select onChange={handleFilter}>
           <option value="">Все категории</option>
-          {categoriesMocks.map((category) => {
-            return <option value={category}>{category}</option>
+          {categoriesMocks.map((category, index) => {
+            return <option key ={index} value={category}>{category}</option>
           })}
         </select>
         <select onChange={handleSort}>

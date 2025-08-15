@@ -3,13 +3,28 @@ import { VisitInfo } from "../../components/visit-info/visit-info";
 import styles from "./place.module.css";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {  selectSelectedPlace } from "../../store/slices/placesSlice";
+import {
+  selectPlaceById,
+  selectSelectedPlace,
+} from "../../store/slices/placesSlice";
+import { selectDishesByPlaceId } from "../../store/slices/dishesSlice";
+import { selectVisitsByPlaceId } from "../../store/slices/visitsSlice";
 
-export function Place() {
-  //? ввела реакт роутер, но не знаю, как применить
+export function PlacePage() {
   const { id } = useParams();
-  //? как будто неправильная логика
-  const place = useSelector(selectSelectedPlace);
+
+  // const place= useSelector(selectSelectedPlace);
+  //изменена логика поиска элемента. Теперь он ищется в сторе по айди
+  const place = useSelector((state) => selectPlaceById(state, Number(id)));
+
+  // Получаем блюда только для выбранного ресторана
+  const dishes = useSelector((state) =>
+    selectDishesByPlaceId(state, Number(id))
+  );
+  const visits = useSelector((state) =>
+    selectVisitsByPlaceId(state, Number(id))
+  );
+
 
   if (!place) {
     return <div>Место не найдено</div>;
@@ -30,10 +45,15 @@ export function Place() {
           </button>
         </div>
         <ul className={styles.visits}>
-          <VisitInfo />
-          <VisitInfo />
-          <VisitInfo />
-          <VisitInfo />
+          {visits.map((visit, index) => (
+            <VisitInfo
+              key={index}
+              date={visit.date}
+              rating={visit.rating}
+              index={index + 1}
+              
+            />
+          ))}
         </ul>
       </div>
 
@@ -46,11 +66,16 @@ export function Place() {
           </button>
         </div>
         <ul className={styles.dishes}>
-          <DishInfo/>
-          <DishInfo/>
-          <DishInfo/>
+          {dishes.map((dish, index) => (
+            <DishInfo
+              key={index}
+              name={dish.name}
+              rating={dish.rating}
+               placeId={id}
+               dishId={dish.id}            />
+          ))}
         </ul>
       </div>
     </div>
   );
-};
+}

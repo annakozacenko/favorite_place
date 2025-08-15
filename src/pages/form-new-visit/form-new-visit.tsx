@@ -14,47 +14,113 @@ import {
   Star,
 } from "lucide-react";
 import styles from "./form-new-visit.module.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectPlaces } from "../../store/slices/placesSlice";
 import { selectDishesByPlaceId } from "../../store/slices/dishesSlice";
-export function FormOfNewVisit() {
+import { FaRegTrashCan } from "react-icons/fa6";
+import { addVisit } from "../../store/slices/visitsSlice";
+
+export type TSelectedDish = {
+  id: number;
+  name: string;
+  placeId: number;
+  rating: number;
+  visitNotes: string;
+  visitRating: number;
+};
+
+export function FormOfNewVisitPage() {
+  const dispatch = useDispatch();
+
   const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
   const [isDishModalOpen, setIsDishModalOpen] = useState(false);
+  const [selectedDishes, setSelectedDishes] = useState<TSelectedDish[]>([]);
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<
+    number | null
+  >(null);
+
+  const [notes, setNotes] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [companions, setCompanions] = useState("");
+  const [overallRating, setOverallRating] = useState(0);
 
   const restaurants = useSelector(selectPlaces);
-
-  const [selectedRestaurantId, setSelectedRestaurantId] = useState<number | null>(
-    null
-  );
-  // const [selectedDish, setSelectedDish] = useState(null);
-
   // Получаем блюда только для выбранного ресторана
+  const dishes = useSelector((state) =>
+    selectedRestaurantId !== null
+      ? selectDishesByPlaceId(state, selectedRestaurantId)
+      : []
+  );
 
-const dishesл = useSelector((state) =>
-  selectedRestaurantId !== null
-    ? selectDishesByPlaceId(state, selectedRestaurantId)
-    : () => []
-);
+  // Обработчик выбора блюда
+  const handleDishSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const dishId = Number(e.target.value);
+    const selectedDish = dishes.find((dish) => dish.id === dishId);
+    if (selectedDish && !selectedDishes.some((dish) => dish.id === dishId)) {
+      setSelectedDishes([
+        ...selectedDishes,
+        { ...selectedDish, visitNotes: "", visitRating: 0 },
+      ]);
+    }
+    e.target.value = ""; // Сбросить выбор
+  };
 
-const dishes = useSelector((state) =>
-  selectedRestaurantId !== null ? selectDishesByPlaceId(state, selectedRestaurantId) : []
-);
+  // Обработчик удаления блюда
+  const handleRemoveDish = (dishId: number) => {
+    setSelectedDishes(selectedDishes.filter((dish) => dish.id !== dishId));
+  };
 
+  // Обработчик изменения рейтинга для блюда
+const handleDishRatingChange = (dishId: number, rating: number) => {
+  setSelectedDishes((prevDishes) => {
+    const updatedDishes = prevDishes.map((dish) =>
+      dish.id === dishId ? { ...dish, visitRating: rating } : dish
+    );
+    const sum = updatedDishes.reduce((acc, dish) => acc + dish.visitRating, 0);
+    const average = updatedDishes.length > 0 ? sum / updatedDishes.length : 0;
+    setOverallRating(average);
+    return updatedDishes;
+  });
+};
 
-  const dishes3 = [
-    { id: "1", name: "Margherita Pizza", restaurant: "Bella Italia" },
-    { id: "2", name: "Carbonara", restaurant: "Bella Italia" },
-    { id: "3", name: "Dragon Roll", restaurant: "Sakura Sushi" },
-    { id: "4", name: "Miso Soup", restaurant: "Sakura Sushi" },
-    { id: "5", name: "Coq au Vin", restaurant: "Le Bistro" },
-  ];
+  // Обработчик изменения заметок для блюда
+  const handleDishNotesChange = (dishId: number, notes: string) => {
+    setSelectedDishes(
+      selectedDishes.map((dish) =>
+        dish.id === dishId ? { ...dish, visitNotes: notes } : dish
+      )
+    );
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selectedRestaurantId === null) return;
+    dispatch(
+      addVisit({
+        placeId: selectedRestaurantId,
+        date: date,
+        companions: companions,
+        rating: overallRating,
+        notes: notes,
+        dishes: selectedDishes,
+      })
+    );
+    // Сброс формы
+    setSelectedRestaurantId(null);
+    setSelectedDishes([]);
+    setNotes("");
+    setDate("");
+    setCompanions("");
+    setOverallRating(0);
+  };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Добавить визит</h1>
 
-      <form className={styles.form}>
-        {/* Restaurant Selection */}
+      <form className={styles.form} onSubmit={handleSubmit}>
+        {/* Выбор ресторана */}
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Ресторан</h2>
 
@@ -67,12 +133,13 @@ const dishes = useSelector((state) =>
               onChange={(e) => {
                 const value = e.target.value;
                 setSelectedRestaurantId(value ? Number(value) : null);
+                setSelectedDishes([]);
               }}
               className={styles.select}
             >
               <option value="">Выберите ресторан</option>
-              {restaurants.map((restaurant) => (
-                <option key={restaurant.id} value={restaurant.id}>
+              {restaurants.map((restaurant, index) => (
+                <option key={index} value={restaurant.id}>
                   {restaurant.name} ({restaurant.category})
                 </option>
               ))}
@@ -89,12 +156,12 @@ const dishes = useSelector((state) =>
           </button>
         </div>
 
-        {/* Visit Details */}
+        {/* Детали визита */}
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Детали визита</h2>
 
           <div className={styles.grid}>
-            {/* Date */}
+            {/* Дата */}
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="visit-date">
                 Дата
@@ -103,14 +170,20 @@ const dishes = useSelector((state) =>
                 <div className={styles.searchIcon}>
                   <Calendar size={18} />
                 </div>
-                <input type="date" id="visit-date" className={styles.input} />
+                <input
+                  type="date"
+                  id="visit-date"
+                  className={styles.input}
+                  onChange={(e) => setDate(e.target.value)}
+                  value={date}
+                />
               </div>
             </div>
 
-            {/* Companions */}
+            {/* Компаньоны */}
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="companions">
-                Companions
+                Компаньоны
               </label>
               <div className={styles.searchInputWrapper}>
                 <div className={styles.searchIcon}>
@@ -119,83 +192,102 @@ const dishes = useSelector((state) =>
                 <input
                   type="text"
                   id="companions"
-                  placeholder="e.g., Family, Friends, Solo"
+                  placeholder="Один, с партнером, с друзьями..."
                   className={styles.input}
+                  onChange={(e) => setCompanions(e.target.value)}
+                  value={companions}
                 />
               </div>
             </div>
           </div>
 
           {/* Overall Rating */}
-          <div className={styles.formGroup}>
+          {/* <div className={styles.formGroup}>
             <label className={styles.label}>Overall Rating</label>
             <StarRating size={24} />
-          </div>
+          </div> */}
 
-          {/* Notes */}
+          {/* Заметки */}
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="visit-notes">
-              Notes
+              Заметки
             </label>
             <textarea
               id="visit-notes"
-              placeholder="Share your experience..."
+              placeholder="Добавить заметки..."
               className={styles.textarea}
+              onChange={(e) => setNotes(e.target.value)}
+              value={notes}
             ></textarea>
           </div>
         </div>
 
-        {/* Dishes */}
+        {/* Выбор блюд */}
         <div className={styles.card}>
-          <h2 className={styles.sectionTitle}>Dishes</h2>
-
+          <h2 className={styles.sectionTitle}>Блюда</h2>
+          <div className={styles.totalRating}>
+            <span>Общая оценка: {overallRating}</span>
+          </div>
           <div className={styles.form}>
-            {/* Would be dynamic in a real app */}
-            <div className={styles.dishItem}>
-              <div className={styles.dishHeader}>
-                <div>
-                  <h3 className={styles.dishTitle}>Margherita Pizza</h3>
-                  <StarRating initialRating={4} size={18} />
-                </div>
-                <button type="button" className={styles.deleteButton}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+            {/* Список выбранных блюд */}
+            {selectedDishes.map((dish, index) => (
+              <div key={index} className={styles.dishItem}>
+                <div className={styles.dishHeader}>
+                  <div>
+                    <h3 className={styles.dishTitle}>{dish.name}</h3>
+                    <StarRating
+                      initialRating={dish.visitRating || 0}
+                      size={18}
+                      onChange={(rating) =>
+                        handleDishRatingChange(dish.id, rating)
+                      }
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={() => handleRemoveDish(dish.id)}
                   >
-                    <path d="M3 6h18"></path>
-                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                  </svg>
-                </button>
+                    <FaRegTrashCan size={18} />
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Заметки о блюде..."
+                  className={styles.input}
+                  value={dish.visitNotes || ""}
+                  onChange={(e) =>
+                    handleDishNotesChange(dish.id, e.target.value)
+                  }
+                  aria-label={`Заметки для блюда ${dish.name}`}
+                />
               </div>
-              <input
-                type="text"
-                placeholder="Notes about this dish..."
-                className={styles.input}
-              />
-            </div>
+            ))}
           </div>
 
-          {/* Add Dish Section */}
+          {/* Добавление блюда */}
           <div className={styles.form}>
             <div className={styles.searchInputWrapper}>
               <div className={styles.searchIcon}>
                 <Search size={18} />
               </div>
-              <select className={styles.select}>
-                <option value="">Select a dish</option>
-                {/* {dishes?.map((dish) => (
-                  <option key={dish.id} value={dish.id}>
+              <select
+                className={styles.select}
+                disabled={selectedRestaurantId === null}
+                defaultValue=""
+                onChange={handleDishSelect}
+                aria-label="Выбор блюда"
+              >
+                <option value="" disabled>
+                  {selectedRestaurantId === null
+                    ? "Сначала выберите ресторан"
+                    : "Выберите блюдо"}
+                </option>
+                {dishes.map((dish, index) => (
+                  <option key={index} value={dish.id}>
                     {dish.name}
                   </option>
-                ))} */}
+                ))}
               </select>
             </div>
 
@@ -203,19 +295,21 @@ const dishes = useSelector((state) =>
               type="button"
               onClick={() => setIsDishModalOpen(true)}
               className={styles.buttonSecondary}
+              disabled={selectedRestaurantId === null}
+              aria-label="Добавить новое блюдо"
             >
               <Plus size={18} />
-              Add New Dish
+              Добавить новое блюдо
             </button>
           </div>
         </div>
 
-        {/* Photos */}
-        <div className={styles.card}>
-          <h2 className={styles.sectionTitle}>Photos</h2>
+{/* пока что отключено, т.к. негде хранить фото */}
+        {/* Фотографии */}
+        {/* <div className={styles.card}>
+          <h2 className={styles.sectionTitle}>Фотографии</h2>
 
           <div className={styles.photoGrid}>
-            {/* Would be dynamic in a real app */}
             <div className={styles.photoItem}>
               <img
                 src="https://images.pexels.com/photos/1579739/pexels-photo-1579739.jpeg"
@@ -227,17 +321,17 @@ const dishes = useSelector((state) =>
 
           <button type="button" className={styles.buttonSecondary}>
             <Camera size={18} />
-            Add Photos
+            Добавить фото
           </button>
-        </div>
+        </div> */}
 
-        {/* Submit Button */}
+        {/* Кнопка сохранения */}
         <button type="submit" className={styles.buttonPrimary}>
-          Save Visit
+          Сохранить визит
         </button>
       </form>
 
-      {/* Modals */}
+      {/* Модальные окна */}
       <RestaurantModal
         isOpen={isRestaurantModalOpen}
         onClose={() => setIsRestaurantModalOpen(false)}
@@ -246,6 +340,7 @@ const dishes = useSelector((state) =>
       <DishModal
         isOpen={isDishModalOpen}
         onClose={() => setIsDishModalOpen(false)}
+        placeId={selectedRestaurantId || 0}
       />
     </div>
   );

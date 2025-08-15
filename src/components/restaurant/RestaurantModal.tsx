@@ -1,6 +1,6 @@
 import { X, MapPin } from "lucide-react";
 import styles from "./RestaurantModal.module.css";
-import { categoriesMocks } from "../../mocks/placesMocks";
+import { categoriesMocks } from "../../mocks/mocks";
 import { useDispatch, useSelector } from "react-redux";
 import { addPlace } from "../../store/slices/placesSlice";
 import { useState } from "react";
@@ -78,8 +78,8 @@ export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
                 <option value="" disabled>
                   Выберите категорию
                 </option>
-                {categoriesMocks.map((category) => {
-                  return <option value={category}>{category}</option>;
+                {categoriesMocks.map((category, index) => {
+                  return <option key={index} value={category}>{category}</option>;
                 })}
               </select>
             </div>
