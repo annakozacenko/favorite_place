@@ -1,7 +1,7 @@
-import { DishInfo } from "../../components/dish-info/dish-info";
-import styles from "./visit.module.css";
+import { DishInfo } from "../../components/DishInfo/DishInfo";
+import styles from "./VisitPage.module.css";
 
-export function Visit () {
+export function VisitPage () {
   return (
     <div className={styles.main}>
       <h1 className={styles.title}>Визит 05.02.2023</h1>

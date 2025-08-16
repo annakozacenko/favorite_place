@@ -1,8 +1,8 @@
-import { VisitInfo } from "../../components/visit-info/visit-info";
-import styles from "./dish.module.css";
+import { VisitInfo } from "../../components/VisitInfo/VisitInfo";
+import styles from "./DishPage.module.css";
 import clsx from "clsx";
 
-export function Dish () {
+export function DishPage () {
   return (
     <div className={styles.main}>
       <h1 className={styles.title}>Том ям</h1>

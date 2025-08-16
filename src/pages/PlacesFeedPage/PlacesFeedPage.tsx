@@ -1,8 +1,9 @@
-import styles from "./feed-places.module.css";
-import { PlacesInfo } from "../../components/place-info/places-info";
+import styles from "./PlacesFeedPage.module.css";
+import { PlacesInfo } from "../../components/PlacesInfo/PlacesInfo";
 import { useDispatch, useSelector } from "react-redux";
-import {  searchPlacesByName, selectPlaces, selectProcessedPlaces, sortPlaces, filterPlacesByCategory } from "../../store/slices/placesSlice";
+import {  searchPlacesByName, selectProcessedPlaces, sortPlaces, filterPlacesByCategory } from "../../store/slices/placesSlice";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { categoriesMocks } from "../../mocks/mocks";
 
 
 
@@ -26,13 +27,9 @@ export function FeedPlaces() {
         <input type="text" placeholder="Поиск" onInput={handleSearch}/>
         <select onChange={handleFilter}>
           <option value="">Все категории</option>
-          <option value="итальянская">итальянская</option>
-          <option value="японская">японская</option>
-          <option value="французская">французская</option>
-          <option value="мексиканская">мексиканская</option>
-          <option value="восточная">восточная</option>
-          <option value="азиатская">азиатская</option>
-          <option value="другая">другая</option>
+          {categoriesMocks.map((category, index) => {
+            return <option key ={index} value={category}>{category}</option>
+          })}
         </select>
         <select onChange={handleSort}>
           <option value="visitsHigh">Часто посещаемые</option>
@@ -45,17 +42,16 @@ export function FeedPlaces() {
         </button>
       </form>
       <div className={styles.cards}>
-        {places.map((card, index) => {
+        {places.map((card) => {
             return (
           <PlacesInfo
-            key={index}
-            id={card.id}
-            name={card.name}
-            location={card.location}
-            visits={card.visits}
-            category={card.category}
-            rating={card.rating}
-          />)
+                key={card.id}
+                id={card.id}
+                name={card.name}
+                location={card.location}
+                visits={card.visits}
+                category={card.category}
+                rating={card.rating} notes={""}          />)
         })}
       </div>
       <button className={styles.add_button}>+</button>

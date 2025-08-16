@@ -1,13 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { placesMocks } from "../../mocks/placesMocks";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { generateNumericId, placesMocks, TCategories } from "../../mocks/mocks";
 
 export type TPlace = {
   id: number;
   name: string;
   location: string;
   visits: number;
-  category: string;
+  category: TCategories;
   rating: number;
+  notes: string;
 };
 
 type TPlacesState = {
@@ -16,7 +17,7 @@ type TPlacesState = {
   favoritePlaces: TPlace[];
   processedPlaces: TPlace[];
   filters: {
-    category: string | null;
+    category: TCategories | null;
     search: string | null;
   };
   sort: string | null;
@@ -55,7 +56,6 @@ const applyFiltersAndSort = (state: TPlacesState) => {
     }
     if (state.sort === "visitsLow") {
       result = [...result].sort((a, b) => a.visits - b.visits);
-      console.log("result", result);
     }
     if (state.sort === "ratingHigh") {
       result = [...result].sort((a, b) => b.rating - a.rating);
@@ -88,9 +88,12 @@ export const placesSlice = createSlice({
         )
       ) {
         return;
-        //? стоит ли добавлять ошибку о существующем месте
       } else {
-        state.places.push(action.payload);
+        const newPlace = {
+          ...action.payload,
+          id: generateNumericId(),
+        };
+        state.places.push(newPlace);
         state.processedPlaces = applyFiltersAndSort(state);
       }
     },
@@ -149,3 +152,21 @@ export const {
   selectFavoritePlaceIds,
   selectProcessedPlaces,
 } = placesSlice.selectors;
+
+export const selectIsPlaceFavorite =
+  createSelector(
+    [(state: { places: TPlacesState }) => state.places.favoritePlaces, (_, id: number) => id],
+    (favoritePlaces, id) => favoritePlaces.some((place) => place.id === id)
+  );
+
+
+export const selectPlaceById = createSelector(
+  [(state: { places: TPlacesState }) => state.places.places, (_, id: number) => id],
+  (places, id) => places.find((place) => place.id === id) || null
+);
+
+
+// export const selectPlacesNamesWithCategories = createSelector(
+//   (state: { places: TPlacesState }) => state.places.places,
+//   (places) => places.map((place) => `${place.name} (${place.category})`)
+// );
