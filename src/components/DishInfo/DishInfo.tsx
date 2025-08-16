@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { selectDishOrderCountByPlace, TDish } from "../../store/slices/dishesSlice";
-import styles from "./dish-info.module.css";
+import styles from "./DishInfo.module.css";
 import clsx from "clsx";
 
 

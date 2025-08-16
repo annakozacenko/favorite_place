@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { TSelectedDish } from "../../pages/form-new-visit/form-new-visit";
+import { TSelectedDish } from "../../pages/NewVisitFormPage/NewVisitFormPage";
 import { generateNumericId } from "../../mocks/mocks";
 
 type TVisit = {

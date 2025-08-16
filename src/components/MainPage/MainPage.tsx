@@ -1,10 +1,10 @@
-import styles from "./app.module.css";
-import { AppHeader } from "../app-header";
-import { FeedPlaces } from "../../pages/feed-places/feed-places";
-import { PlacePage } from "../../pages/place/place";
-import { DishPage } from "../../pages/dish/dish";
-import { VisitPage } from "../../pages/visit/visit";
-import { FormOfNewVisitPage } from "../../pages/form-new-visit/form-new-visit";
+import styles from "./MainPage.module.css";
+import { AppHeader } from "../Header";
+import { FeedPlaces } from "../../pages/PlacesFeedPage/PlacesFeedPage";
+import { PlacePage } from "../../pages/PlacePage/PlacePage";
+import { DishPage } from "../../pages/DishPage/DishPage";
+import { VisitPage } from "../../pages/VisitPage/VisitPage";
+import { FormOfNewVisitPage } from "../../pages/NewVisitFormPage/NewVisitFormPage";
 import { Routes, Route } from "react-router-dom";
 
 function MainPage() {

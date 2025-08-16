@@ -1,5 +1,5 @@
-import { VisitInfo } from "../../components/visit-info/visit-info";
-import styles from "./dish.module.css";
+import { VisitInfo } from "../../components/VisitInfo/VisitInfo";
+import styles from "./DishPage.module.css";
 import clsx from "clsx";
 
 export function DishPage () {

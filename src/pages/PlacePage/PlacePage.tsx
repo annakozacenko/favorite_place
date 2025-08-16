@@ -1,6 +1,6 @@
-import { DishInfo } from "../../components/dish-info/dish-info";
-import { VisitInfo } from "../../components/visit-info/visit-info";
-import styles from "./place.module.css";
+import { DishInfo } from "../../components/DishInfo/DishInfo";
+import { VisitInfo } from "../../components/VisitInfo/VisitInfo";
+import styles from "./PlacePage.module.css";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -47,7 +47,7 @@ export function PlacePage() {
         <ul className={styles.visits}>
           {visits.map((visit, index) => (
             <VisitInfo
-              key={index}
+              key={visit.id}
               date={visit.date}
               rating={visit.rating}
               index={index + 1}
@@ -66,9 +66,9 @@ export function PlacePage() {
           </button>
         </div>
         <ul className={styles.dishes}>
-          {dishes.map((dish, index) => (
+          {dishes.map((dish) => (
             <DishInfo
-              key={index}
+              key={dish.id}
               name={dish.name}
               rating={dish.rating}
                placeId={id}

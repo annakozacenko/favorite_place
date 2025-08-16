@@ -1,4 +1,4 @@
-import styles from "./visit-info.module.css";
+import styles from "./VisitInfo.module.css";
 import clsx from "clsx";
 
 type VisitInfoProps = {

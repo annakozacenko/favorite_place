@@ -1,5 +1,5 @@
-import styles from "./feed-places.module.css";
-import { PlacesInfo } from "../../components/place-info/places-info";
+import styles from "./PlacesFeedPage.module.css";
+import { PlacesInfo } from "../../components/PlacesInfo/PlacesInfo";
 import { useDispatch, useSelector } from "react-redux";
 import {  searchPlacesByName, selectProcessedPlaces, sortPlaces, filterPlacesByCategory } from "../../store/slices/placesSlice";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -42,10 +42,10 @@ export function FeedPlaces() {
         </button>
       </form>
       <div className={styles.cards}>
-        {places.map((card, index) => {
+        {places.map((card) => {
             return (
           <PlacesInfo
-                key={index}
+                key={card.id}
                 id={card.id}
                 name={card.name}
                 location={card.location}

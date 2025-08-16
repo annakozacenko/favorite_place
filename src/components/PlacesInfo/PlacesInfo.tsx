@@ -1,5 +1,5 @@
 import { CiLocationOn } from "react-icons/ci";
-import styles from "./places-info.module.css";
+import styles from "./PlacesInfo.module.css";
 import { RxCounterClockwiseClock } from "react-icons/rx";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import {

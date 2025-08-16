@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { RestaurantModal } from "../../components/restaurant/RestaurantModal";
-import { DishModal } from "../../components/dish/DishModal";
+import { RestaurantModal } from "../../components/RestaurantModal/RestaurantModal";
+import { DishModal } from "../../components/DishModal/DishModal";
 import { StarRating } from "../../components/ui/StarRating";
 import {
   Search,
@@ -13,7 +13,7 @@ import {
   DollarSign,
   Star,
 } from "lucide-react";
-import styles from "./form-new-visit.module.css";
+import styles from "./NewVisitFormPage.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { selectPlaces } from "../../store/slices/placesSlice";
 import { selectDishesByPlaceId } from "../../store/slices/dishesSlice";
@@ -138,8 +138,8 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
               className={styles.select}
             >
               <option value="">Выберите ресторан</option>
-              {restaurants.map((restaurant, index) => (
-                <option key={index} value={restaurant.id}>
+              {restaurants.map((restaurant) => (
+                <option key={restaurant.id} value={restaurant.id}>
                   {restaurant.name} ({restaurant.category})
                 </option>
               ))}
@@ -230,8 +230,8 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
           </div>
           <div className={styles.form}>
             {/* Список выбранных блюд */}
-            {selectedDishes.map((dish, index) => (
-              <div key={index} className={styles.dishItem}>
+            {selectedDishes.map((dish) => (
+              <div key={dish.id} className={styles.dishItem}>
                 <div className={styles.dishHeader}>
                   <div>
                     <h3 className={styles.dishTitle}>{dish.name}</h3>
@@ -283,8 +283,8 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
                     ? "Сначала выберите ресторан"
                     : "Выберите блюдо"}
                 </option>
-                {dishes.map((dish, index) => (
-                  <option key={index} value={dish.id}>
+                {dishes.map((dish) => (
+                  <option key={dish.id} value={dish.id}>
                     {dish.name}
                   </option>
                 ))}
