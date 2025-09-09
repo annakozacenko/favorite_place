@@ -13,7 +13,6 @@ import { selectVisitsByPlaceId } from "../../store/slices/visitsSlice";
 export function PlacePage() {
   const { id } = useParams();
 
-  // const place= useSelector(selectSelectedPlace);
   //изменена логика поиска элемента. Теперь он ищется в сторе по айди
   const place = useSelector((state) => selectPlaceById(state, Number(id)));
 
@@ -24,7 +23,6 @@ export function PlacePage() {
   const visits = useSelector((state) =>
     selectVisitsByPlaceId(state, Number(id))
   );
-
 
   if (!place) {
     return <div>Место не найдено</div>;
@@ -39,10 +37,6 @@ export function PlacePage() {
       <div className={styles.section}>
         <div className={styles.sectionTitle}>
           <h2>Визиты</h2>
-          <button className={styles.addButton}>
-            <img src="src/assets/add-icon.svg" alt="+" />
-            Добавить визит
-          </button>
         </div>
         <ul className={styles.visits}>
           {visits.map((visit, index) => (
@@ -51,7 +45,6 @@ export function PlacePage() {
               date={visit.date}
               rating={visit.rating}
               index={index + 1}
-              
             />
           ))}
         </ul>
@@ -60,10 +53,6 @@ export function PlacePage() {
       <div className={styles.section}>
         <div className={styles.sectionTitle}>
           <h2>Блюда</h2>
-          <button className={styles.addButton}>
-            <img src="src/assets/add-icon.svg" alt="+" />
-            Добавить блюдо
-          </button>
         </div>
         <ul className={styles.dishes}>
           {dishes.map((dish) => (
@@ -71,8 +60,9 @@ export function PlacePage() {
               key={dish.id}
               name={dish.name}
               rating={dish.rating}
-               placeId={id}
-               dishId={dish.id}            />
+              placeId={id ?? ""}
+              dishId={dish.id.toString()}
+            />
           ))}
         </ul>
       </div>

@@ -9,7 +9,6 @@ export type TDish = {
   //берется последняя оценка из визитов
   rating: number;
 //  notes: string;
-timesOrdered: number
   
 };
 
@@ -52,15 +51,7 @@ export const dishesSlice = createSlice({
         dish.rating = rating;
       }
     },
-    //TODO добавить обновелние количества заказов при редактировании заказа- если блюдо удалят
-    updatedDishCounter: (state, action) => {
-      const { id, } = action.payload;
-      const dish = state.dishes.find((dish) => dish.id === id);
-      if (dish) {
-        dish.timesOrdered += 1;
-      }
-    }
-  },
+  }
 });
 
 export const { addDish } = dishesSlice.actions;
@@ -74,7 +65,7 @@ export const selectDishesByPlaceId =
 
 
 
-  //шляпа какая-то пока что
+
 
 export const selectDishOrderCountByPlace = createSelector(
   [

@@ -63,6 +63,7 @@ export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
                 required
                 className={styles.input}
                 onChange={(e) => setName(e.target.value)}
+                value={name}
               />
             </div>
             <div className={styles.formGroup}>

@@ -57,23 +57,39 @@ export const placesMocks: TPlace[] = [
 ];
 
 export const dishesMocks: TDish[] = [
-  { id: 1, name: "Margherita Pizza", placeId: 1, rating: 4.5, notes: "notes" },
-  { id: 2, name: "Carbonara", placeId: 1, rating: 4.2, notes: "notes" },
-  { id: 3, name: "Dragon Roll", placeId: 2, rating: 4.7, notes: "notes" },
-  { id: 4, name: "Miso Soup", placeId: 2, rating: 4.4, notes: "notes" },
-  { id: 5, name: "Coq au Vin", placeId: 3, rating: 4.3, notes: "notes" }
+  { id: 1, name: "Margherita Pizza", placeId: 1, rating: 4.5 },
+  { id: 2, name: "Carbonara", placeId: 1, rating: 4.2 },
+  { id: 3, name: "Dragon Roll", placeId: 2, rating: 4.7 },
+  { id: 4, name: "Miso Soup", placeId: 2, rating: 4.4 },
+  { id: 5, name: "Coq au Vin", placeId: 3, rating: 4.3 },
 ];
 
-export enum TCategories { 
+// export enum TCategories {
+//   "итальянская",
+//   "французская",
+//   "японская",
+//   "китайская",
+//   "мексиканская",
+//   "восточная",
+//   "азиатская",
+//   "индийская",
+//   "другая",
+// }
+
+// export const  categoriesMocks = Object.values(TCategories);
+
+export const categories = [
   "итальянская",
   "французская",
   "японская",
-  "китайская",
+  "китайская",
   "мексиканская",
   "восточная",
   "азиатская",
   "индийская",
   "другая",
-}
+] as const;
 
-export const  categoriesMocks = Object.values(TCategories);
+export type TCategories = (typeof categories)[number];
+
+export const categoriesMocks = categories;

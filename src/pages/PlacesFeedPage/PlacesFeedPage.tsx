@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {  searchPlacesByName, selectProcessedPlaces, sortPlaces, filterPlacesByCategory } from "../../store/slices/placesSlice";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { categoriesMocks } from "../../mocks/mocks";
+import { RestaurantModal } from "../../components/RestaurantModal/RestaurantModal";
+import { useState } from "react";
 
 
 
@@ -20,6 +22,8 @@ export function FeedPlaces() {
   const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(filterPlacesByCategory(e.target.value));
   }
+  const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
+
   return (
     <div className={styles.feed_places}>
       <h1>Список мест</h1>
@@ -54,7 +58,10 @@ export function FeedPlaces() {
                 rating={card.rating} notes={""}          />)
         })}
       </div>
-      <button className={styles.add_button}>+</button>
+      <button className={styles.add_button} onClick={() => setIsRestaurantModalOpen(true)}>+</button>
+      {isRestaurantModalOpen && (
+        <RestaurantModal onClose={() => setIsRestaurantModalOpen(false)} isOpen={isRestaurantModalOpen} />
+      )}
     </div>
   );
 }

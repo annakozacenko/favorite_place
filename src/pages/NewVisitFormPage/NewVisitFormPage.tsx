@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { RestaurantModal } from "../../components/RestaurantModal/RestaurantModal";
 import { DishModal } from "../../components/DishModal/DishModal";
 import { StarRating } from "../../components/ui/StarRating";
@@ -28,9 +29,9 @@ export type TSelectedDish = {
   visitNotes: string;
   visitRating: number;
 };
-
 export function FormOfNewVisitPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
   const [isDishModalOpen, setIsDishModalOpen] = useState(false);
@@ -113,6 +114,7 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
     setDate("");
     setCompanions("");
     setOverallRating(0);
+    navigate("/");
   };
 
   return (

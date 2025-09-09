@@ -1,12 +1,19 @@
 import { useSelector } from "react-redux";
-import { selectDishOrderCountByPlace, TDish } from "../../store/slices/dishesSlice";
+import { selectDishOrderCountByPlace } from "../../store/slices/dishesSlice";
 import styles from "./DishInfo.module.css";
 import clsx from "clsx";
 
 
-export function DishInfo ({ name, rating, placeId, dishId}) {
+interface DishInfoProps {
+  name: string;
+  rating: number;
+  placeId: string;
+  dishId: string;
+}
+
+export function DishInfo ({ name, rating, placeId, dishId }: DishInfoProps) {
 const timesOrderedCount = useSelector((state) =>
-  selectDishOrderCountByPlace(state, placeId, dishId)
+  selectDishOrderCountByPlace(state, Number(placeId), Number(dishId))
 );
 
   return (
@@ -17,7 +24,6 @@ const timesOrderedCount = useSelector((state) =>
         <span>{rating} stars</span>
       </div>
       <div className={styles.visits}>{timesOrderedCount} раз</div>
-      {/* <div className={styles.comment}>{notes}</div> */}
     </div>
   );
 };
