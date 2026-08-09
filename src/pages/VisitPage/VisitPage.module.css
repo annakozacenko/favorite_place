@@ -7,11 +7,83 @@
   padding: 24px;
 }
 
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
 .title {
   font-size: 32px;
   font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 24px;
+  margin-bottom: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton,
+.dangerButton,
+.saveButton {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.actionButton {
+  background: #eef2f7;
+  color: #1a1a1a;
+}
+
+.dangerButton {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.saveButton {
+  background: rgba(29, 155, 240, 1);
+  color: #fff;
+  align-self: flex-start;
+}
+
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.input,
+.textarea {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.textarea {
+  min-height: 80px;
+  resize: vertical;
 }
 
 .section {
@@ -46,4 +118,16 @@
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .photoGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

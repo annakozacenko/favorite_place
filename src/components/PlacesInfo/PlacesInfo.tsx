@@ -4,13 +4,13 @@ import { RxCounterClockwiseClock } from "react-icons/rx";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import {
   selectIsPlaceFavorite,
-  selectFavoritePlaceIds,
   selectPlace,
   toggleFavoritePlace,
   TPlace,
 } from "../../store/slices/placesSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { useNavigate } from "react-router-dom";
+import placeImage from "../../assets/place.svg";
 
 export function PlacesInfo({
   id,
@@ -18,49 +18,30 @@ export function PlacesInfo({
   location,
   visits = 0,
   category,
-  rating
+  rating,
+  notes,
 }: TPlace) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const placeSnapshot: TPlace = { id, name, location, visits, category, rating, notes };
 
-
-  // подписываемся только на конкретный id
-const isFavorite = useSelector((state) => selectIsPlaceFavorite(state, id));
-
+  const isFavorite = useAppSelector((state) => selectIsPlaceFavorite(state, id));
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    dispatch(
-      toggleFavoritePlace({
-        id,
-        name,
-        location,
-        visits,
-        category,
-        rating,
-      })
-    );
+    dispatch(toggleFavoritePlace(placeSnapshot));
   };
 
   const handlePlaceClick = () => {
     navigate(`/place/${id}`);
-    dispatch(
-      selectPlace({
-        id,
-        name,
-        location,
-        visits,
-        category,
-        rating,
-      })
-    );
+    dispatch(selectPlace(placeSnapshot));
   };
   return (
     <div className={styles.place_info} onClick={handlePlaceClick}>
       <div className={styles.rating_info}>
         <img
           className={styles.rating_image}
-          src="src/assets/cafe.jpg"
+          src={placeImage}
           alt="cafe"
         />
         <div className={styles.rating_value}>

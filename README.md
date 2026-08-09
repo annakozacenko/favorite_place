@@ -1,50 +1,46 @@
-# React + TypeScript + Vite
+# Favorite Place
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Офлайн-дневник ресторанов: места, визиты, блюда, оценки, фото и избранное.
 
-Currently, two official plugins are available:
+Стек: React 18 + TypeScript + Vite + Redux Toolkit + redux-persist + Capacitor.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Быстрый старт (браузер)
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Откройте http://localhost:5173/#/ (роутинг через HashRouter).
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Скрипты
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+| Команда | Назначение |
+|---------|------------|
+| `npm run dev` | Dev-сервер |
+| `npm run build` | Production-сборка в `dist/` |
+| `npm run build:mobile` | Сборка + `cap sync` |
+| `npm run cap:open:android` | Открыть Android Studio |
+| `npm run cap:add:ios` / `cap:open:ios` | iOS (нужен CocoaPods) |
+| `npm run preview` | Превью production-сборки |
+
+Подробнее про мобильную сборку — в [MOBILE.md](./MOBILE.md).
+
+## Модель данных
+
+- **places** — рестораны (название, кухня, адрес, заметки, избранное)
+- **visits** — визиты (дата, оценка, блюда с оценками, фото, компаньоны)
+- **dishes** — каталог блюд по местам
+
+Счётчик визитов и рейтинг места считаются из `visits` (селекторы в `src/store/selectors.ts`).
+
+Данные сохраняются в **localStorage** (`persist:favorite_place`). Экспорт/импорт JSON — на экране «Избранное».
+
+## Основные сценарии
+
+1. Добавить место → добавить визит с блюдами и фото
+2. Открыть место → визит → блюдо
+3. Изменить / удалить место, визит или блюдо
+4. Обновить страницу — данные на месте
+
+Чеклист ручного тестирования — [TESTING.md](./TESTING.md).

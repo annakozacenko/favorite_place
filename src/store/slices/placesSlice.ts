@@ -1,12 +1,14 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { generateNumericId, placesMocks, TCategories } from "../../mocks/mocks";
 
 export type TPlace = {
   id: number;
   name: string;
   location: string;
+  /** Счётчик визитов — для отображения используйте селекторы с visits */
   visits: number;
   category: TCategories;
+  /** Средняя оценка — для отображения используйте селекторы с visits */
   rating: number;
   notes: string;
 };
@@ -15,7 +17,6 @@ type TPlacesState = {
   places: TPlace[];
   selectedPlace: TPlace | null;
   favoritePlaces: TPlace[];
-  processedPlaces: TPlace[];
   filters: {
     category: TCategories | null;
     search: string | null;
@@ -27,7 +28,6 @@ const initialState: TPlacesState = {
   places: placesMocks,
   selectedPlace: null,
   favoritePlaces: [],
-  processedPlaces: placesMocks,
   filters: {
     category: null,
     search: null,
@@ -35,38 +35,14 @@ const initialState: TPlacesState = {
   sort: "visitsHigh",
 };
 
-//добавлена обобщающая функция сортировки и фильтрации, чтобы можно было комбинировать фильтры
-const applyFiltersAndSort = (state: TPlacesState) => {
-  let result = [...state.places];
-
-  if (state.filters.category) {
-    result = result.filter(
-      (place) => place.category === state.filters.category
-    );
-  }
-  if (state.filters.search) {
-    result = result.filter((place) =>
-      place.name.toLowerCase().includes(state.filters.search!.toLowerCase())
-    );
-  }
-
-  if (state.sort) {
-    if (state.sort === "visitsHigh") {
-      result = [...result].sort((a, b) => b.visits - a.visits);
-    }
-    if (state.sort === "visitsLow") {
-      result = [...result].sort((a, b) => a.visits - b.visits);
-    }
-    if (state.sort === "ratingHigh") {
-      result = [...result].sort((a, b) => b.rating - a.rating);
-    }
-    if (state.sort === "ratingLow") {
-      result = [...result].sort((a, b) => a.rating - b.rating);
-    }
-  }
-
-  return result;
+type TAddPlacePayload = {
+  name: string;
+  category: TCategories;
+  location: string;
+  notes: string;
 };
+
+type TUpdatePlacePayload = TAddPlacePayload & { id: number };
 
 export const placesSlice = createSlice({
   name: "places",
@@ -77,10 +53,9 @@ export const placesSlice = createSlice({
     selectFavoritePlaces: (state) => state.favoritePlaces,
     selectFavoritePlaceIds: (state) =>
       state.favoritePlaces.map((place) => place.id),
-    selectProcessedPlaces: (state) => state.processedPlaces,
   },
   reducers: {
-    addPlace: (state, action) => {
+    addPlace: (state, action: PayloadAction<TAddPlacePayload>) => {
       if (
         state.places.some(
           (place) =>
@@ -88,17 +63,60 @@ export const placesSlice = createSlice({
         )
       ) {
         return;
-      } else {
-        const newPlace = {
-          ...action.payload,
-          id: generateNumericId(),
-        };
-        state.places.push(newPlace);
-        state.processedPlaces = applyFiltersAndSort(state);
+      }
+
+      const newPlace: TPlace = {
+        ...action.payload,
+        id: generateNumericId(),
+        visits: 0,
+        rating: 0,
+      };
+      state.places.push(newPlace);
+    },
+
+    updatePlace: (state, action: PayloadAction<TUpdatePlacePayload>) => {
+      const place = state.places.find((item) => item.id === action.payload.id);
+      if (!place) return;
+
+      const duplicate = state.places.some(
+        (item) =>
+          item.id !== action.payload.id &&
+          item.name.toLowerCase() === action.payload.name.toLowerCase()
+      );
+      if (duplicate) return;
+
+      place.name = action.payload.name;
+      place.category = action.payload.category;
+      place.location = action.payload.location;
+      place.notes = action.payload.notes;
+
+      const favorite = state.favoritePlaces.find(
+        (item) => item.id === action.payload.id
+      );
+      if (favorite) {
+        favorite.name = place.name;
+        favorite.category = place.category;
+        favorite.location = place.location;
+        favorite.notes = place.notes;
+      }
+
+      if (state.selectedPlace?.id === place.id) {
+        state.selectedPlace = { ...place };
       }
     },
 
-    toggleFavoritePlace: (state, action) => {
+    deletePlace: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      state.places = state.places.filter((place) => place.id !== id);
+      state.favoritePlaces = state.favoritePlaces.filter(
+        (place) => place.id !== id
+      );
+      if (state.selectedPlace?.id === id) {
+        state.selectedPlace = null;
+      }
+    },
+
+    toggleFavoritePlace: (state, action: PayloadAction<TPlace>) => {
       if (
         state.favoritePlaces.some((place) => place.id === action.payload.id)
       ) {
@@ -110,34 +128,32 @@ export const placesSlice = createSlice({
       }
     },
 
-    selectPlace: (state, action) => {
+    selectPlace: (state, action: PayloadAction<TPlace>) => {
       state.selectedPlace = action.payload;
     },
-    searchPlacesByName: (state, action) => {
+    searchPlacesByName: (state, action: PayloadAction<string>) => {
       state.filters.search = action.payload || null;
-      state.processedPlaces = applyFiltersAndSort(state);
     },
-    sortPlaces: (state, action) => {
+    sortPlaces: (state, action: PayloadAction<string>) => {
       state.sort = action.payload;
-      state.processedPlaces = applyFiltersAndSort(state);
     },
-    filterPlacesByCategory: (state, action) => {
-      state.filters.category = action.payload || null;
-      state.processedPlaces = applyFiltersAndSort(state);
+    filterPlacesByCategory: (state, action: PayloadAction<string>) => {
+      state.filters.category = (action.payload || null) as TCategories | null;
     },
     clearFilters: (state) => {
       state.filters = {
         category: null,
         search: null,
       };
-      state.sort = null;
-      state.processedPlaces = [...state.places];
+      state.sort = "visitsHigh";
     },
   },
 });
 
 export const {
   addPlace,
+  updatePlace,
+  deletePlace,
   toggleFavoritePlace,
   selectPlace,
   searchPlacesByName,
@@ -150,23 +166,20 @@ export const {
   selectSelectedPlace,
   selectFavoritePlaces,
   selectFavoritePlaceIds,
-  selectProcessedPlaces,
 } = placesSlice.selectors;
 
-export const selectIsPlaceFavorite =
-  createSelector(
-    [(state: { places: TPlacesState }) => state.places.favoritePlaces, (_, id: number) => id],
-    (favoritePlaces, id) => favoritePlaces.some((place) => place.id === id)
-  );
-
-
-export const selectPlaceById = createSelector(
-  [(state: { places: TPlacesState }) => state.places.places, (_, id: number) => id],
-  (places, id) => places.find((place) => place.id === id) || null
+export const selectIsPlaceFavorite = createSelector(
+  [
+    (state: { places: TPlacesState }) => state.places.favoritePlaces,
+    (_: { places: TPlacesState }, id: number) => id,
+  ],
+  (favoritePlaces, id) => favoritePlaces.some((place) => place.id === id)
 );
 
-
-// export const selectPlacesNamesWithCategories = createSelector(
-//   (state: { places: TPlacesState }) => state.places.places,
-//   (places) => places.map((place) => `${place.name} (${place.category})`)
-// );
+export const selectPlaceById = createSelector(
+  [
+    (state: { places: TPlacesState }) => state.places.places,
+    (_: { places: TPlacesState }, id: number) => id,
+  ],
+  (places, id) => places.find((place) => place.id === id) ?? null
+);

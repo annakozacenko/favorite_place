@@ -49,7 +49,7 @@
 
 .searching_form button {
   background-color: rgba(29, 155, 240, 1);
-  background-image:"/src/assets/manage_search_Figr_Icon.svg";
+  background-image: url("../../assets/manage_search_Figr_Icon.svg");
   border: none;
   border-radius: 4px;
   color: #fff;
@@ -67,7 +67,7 @@
 
 .add_button {
   background-color:rgba(29, 155, 240, 1);
-  background-image:"/src/assets/add_Figr_Icon.svg";
+  background-image: url("../../assets/add_Figr_Icon.svg");
   border: none;
   border-radius: 4px;
   color: #fff;

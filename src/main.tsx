@@ -1,17 +1,23 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import "./index.css";
-import App from "./components/MainPage/MainPage";
-import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { HashRouter } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/integration/react';
+import './index.css';
+import App from './components/MainPage/MainPage';
+import { AppShell } from './components/AppShell/AppShell';
+import { Provider } from 'react-redux';
+import { persistor, store } from './store/store';
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <PersistGate persistor={persistor} loading={<div>Загрузка...</div>}>
+        <AppShell>
+          <HashRouter>
+            <App />
+          </HashRouter>
+        </AppShell>
+      </PersistGate>
     </Provider>
   </StrictMode>
 );

@@ -1,4 +1,4 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { dishesMocks, generateNumericId } from "../../mocks/mocks";
 import { TVisitsState } from "./visitsSlice";
 
@@ -6,17 +6,13 @@ export type TDish = {
   id: number;
   name: string;
   placeId: number;
-  //берется последняя оценка из визитов
   rating: number;
-//  notes: string;
-  
 };
 
 type TDishesState = { dishes: TDish[] };
 
 const initialState: TDishesState = { dishes: dishesMocks };
 
-//? возможно нет смысла в отдельном слайсе для блюд, т.к их можно хранить в слайсе ресторанов
 export const dishesSlice = createSlice({
   name: "dishes",
   initialState,
@@ -24,62 +20,99 @@ export const dishesSlice = createSlice({
     selectDishes: (state) => state.dishes,
   },
   reducers: {
-    //? такая типизация ок? или лучше создать отдельный тип
-    addDish: (state, action: { payload: Pick<TDish, "name" | "placeId"> }) => {
+    addDish: (state, action: PayloadAction<Pick<TDish, "name" | "placeId">>) => {
       if (
         state.dishes.some(
           (dish) =>
-            dish.name.toLowerCase() === action.payload.name.toLowerCase()
+            dish.name.toLowerCase() === action.payload.name.toLowerCase() &&
+            dish.placeId === action.payload.placeId
         )
       ) {
         return;
-      } else {
-        const newDish = {
-          ...action.payload,
-          id: generateNumericId(),
-          rating: 0,
-          timesOrdered: 0
-        };
-        state.dishes.push(newDish);
       }
+
+      const newDish: TDish = {
+        ...action.payload,
+        id: generateNumericId(),
+        rating: 0,
+      };
+      state.dishes.push(newDish);
     },
-        //TODO добавить обновелние количества заказов при редактировании заказа- если блюдо удалят
-    updateDishRating: (state, action) => {
+    updateDish: (
+      state,
+      action: PayloadAction<{ id: number; name: string }>
+    ) => {
+      const dish = state.dishes.find((item) => item.id === action.payload.id);
+      if (!dish) return;
+
+      const duplicate = state.dishes.some(
+        (item) =>
+          item.id !== action.payload.id &&
+          item.placeId === dish.placeId &&
+          item.name.toLowerCase() === action.payload.name.toLowerCase()
+      );
+      if (duplicate) return;
+
+      dish.name = action.payload.name;
+    },
+    updateDishRating: (
+      state,
+      action: PayloadAction<{ id: number; rating: number }>
+    ) => {
       const { id, rating } = action.payload;
-      const dish = state.dishes.find((dish) => dish.id === id);
+      const dish = state.dishes.find((item) => item.id === id);
       if (dish) {
         dish.rating = rating;
       }
     },
-  }
+    deleteDish: (state, action: PayloadAction<number>) => {
+      state.dishes = state.dishes.filter((dish) => dish.id !== action.payload);
+    },
+    deleteDishesByPlaceId: (state, action: PayloadAction<number>) => {
+      state.dishes = state.dishes.filter(
+        (dish) => dish.placeId !== action.payload
+      );
+    },
+  },
 });
 
-export const { addDish } = dishesSlice.actions;
+export const {
+  addDish,
+  updateDish,
+  updateDishRating,
+  deleteDish,
+  deleteDishesByPlaceId,
+} = dishesSlice.actions;
 export const { selectDishes } = dishesSlice.selectors;
 
-export const selectDishesByPlaceId =
-  createSelector(
-    [(state: { dishes: TDishesState }) => state.dishes.dishes, (_, placeId: number) => placeId],
-    (dishes, placeId) => dishes.filter((dish) => dish.placeId === placeId)
-  );
+export const selectDishesByPlaceId = createSelector(
+  [
+    (state: { dishes: TDishesState }) => state.dishes.dishes,
+    (_: { dishes: TDishesState }, placeId: number) => placeId,
+  ],
+  (dishes, placeId) => dishes.filter((dish) => dish.placeId === placeId)
+);
 
-
-
-
+export const selectDishById = createSelector(
+  [
+    (state: { dishes: TDishesState }) => state.dishes.dishes,
+    (_: { dishes: TDishesState }, id: number) => id,
+  ],
+  (dishes, id) => dishes.find((dish) => dish.id === id) ?? null
+);
 
 export const selectDishOrderCountByPlace = createSelector(
   [
     (state: { visits: TVisitsState }) => state.visits.visits,
-    (_: any, placeId: number) => placeId,
-    (_: any, __: number, dishId: number) => dishId,
+    (_: { visits: TVisitsState }, placeId: number) => placeId,
+    (_: { visits: TVisitsState }, __: number, dishId: number) => dishId,
   ],
   (visits, placeId, dishId) =>
     visits
       .filter((visit) => visit.placeId === placeId)
       .reduce(
         (count, visit) =>
-          count +
-          visit.dishes.filter((dish) => dish.id === dishId).length,
+          count + visit.dishes.filter((dish) => dish.id === dishId).length,
         0
       )
 );

@@ -1,29 +1,51 @@
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import styles from "./DishModal.module.css";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
-import { addDish } from "../../store/slices/dishesSlice";
+import { useAppDispatch } from "../../store/hooks";
+import { addDish, updateDish, TDish } from "../../store/slices/dishesSlice";
 
 type DishModalProps = {
   isOpen: boolean;
   onClose: () => void;
   placeId: number;
+  dish?: TDish | null;
 };
 
-export function DishModal({ isOpen, onClose, placeId }: DishModalProps) {
+export function DishModal({
+  isOpen,
+  onClose,
+  placeId,
+  dish = null,
+}: DishModalProps) {
+  const dispatch = useAppDispatch();
+  const [name, setName] = useState("");
+  const isEdit = Boolean(dish);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setName(dish?.name ?? "");
+  }, [isOpen, dish]);
+
   if (!isOpen) return null;
 
-  const dispatch = useDispatch();
+  const resetForm = () => setName("");
 
-  const [name, setName] = useState("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(
-      addDish({
-        name,
-        placeId,
-      })
-    );
+    if (!name.trim()) return;
+
+    if (dish) {
+      dispatch(updateDish({ id: dish.id, name: name.trim() }));
+    } else {
+      dispatch(
+        addDish({
+          name: name.trim(),
+          placeId,
+        })
+      );
+    }
+
+    resetForm();
     onClose();
   };
 
@@ -31,15 +53,16 @@ export function DishModal({ isOpen, onClose, placeId }: DishModalProps) {
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Добавить блюдо</h2>
+          <h2 className={styles.title}>
+            {isEdit ? "Редактировать блюдо" : "Добавить блюдо"}
+          </h2>
           <button onClick={onClose} className={styles.closeButton}>
             <X size={20} />
           </button>
         </div>
 
         <div className={styles.content}>
-          <form className={styles.form}>
-            {/* Название */}
+          <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="dish-name">
                 Название*
@@ -50,6 +73,8 @@ export function DishModal({ isOpen, onClose, placeId }: DishModalProps) {
                 required
                 className={styles.input}
                 placeholder="Введите название блюда"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
@@ -62,7 +87,7 @@ export function DishModal({ isOpen, onClose, placeId }: DishModalProps) {
                 Отменить
               </button>
               <button type="submit" className={styles.buttonPrimary}>
-                Добавить
+                {isEdit ? "Сохранить" : "Добавить"}
               </button>
             </div>
           </form>

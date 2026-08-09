@@ -1,32 +1,41 @@
-import styles from './Header.module.css';
-import { NavLink } from 'react-router-dom';
-import clsx from 'clsx';
+import styles from "./Header.module.css";
+import { NavLink } from "react-router-dom";
+import clsx from "clsx";
+import { MapPin, Plus, Heart } from "lucide-react";
 
 export const AppHeader = () => {
-    return (
-        <nav className={styles.menu}>
-            <NavLink 
-                to="/" 
-                className={({ isActive }) => clsx(styles.menuItem, { [styles.active]: isActive })}
-                end
-            >
-                <img className={styles.icon} src="src/assets/add_Figr_Icon.svg" alt="Places" />
-                <div className={styles.navTitle}>Места</div>
-            </NavLink>
-            <NavLink 
-                to="/new-visit" 
-                className={({ isActive }) => clsx(styles.menuItem, { [styles.active]: isActive })}
-            >
-                <img className={styles.icon} src="src/assets/add_Figr_Icon.svg" alt="New Visit" />
-                <div className={styles.navTitle}>Новый визит</div>
-            </NavLink>
-            <NavLink 
-                to="/profile" 
-                className={({ isActive }) => clsx(styles.menuItem, { [styles.active]: isActive })}
-            >
-                <img className={styles.icon} src="src/assets/add_Figr_Icon.svg" alt="Profile" />
-                <div className={styles.navTitle}>Профиль</div>
-            </NavLink>
-        </nav>
-    )
-}
+  return (
+    <nav className={styles.menu} aria-label="Основная навигация">
+      <NavLink
+        to="/"
+        className={({ isActive }) =>
+          clsx(styles.menuItem, { [styles.active]: isActive })
+        }
+        end
+      >
+        <MapPin size={22} strokeWidth={1.75} />
+        <span className={styles.navTitle}>Места</span>
+      </NavLink>
+      <NavLink
+        to="/new-visit"
+        className={({ isActive }) =>
+          clsx(styles.menuItem, styles.menuItemAccent, {
+            [styles.active]: isActive,
+          })
+        }
+      >
+        <Plus size={24} strokeWidth={2} />
+        <span className={styles.navTitle}>Визит</span>
+      </NavLink>
+      <NavLink
+        to="/profile"
+        className={({ isActive }) =>
+          clsx(styles.menuItem, { [styles.active]: isActive })
+        }
+      >
+        <Heart size={22} strokeWidth={1.75} />
+        <span className={styles.navTitle}>Избранное</span>
+      </NavLink>
+    </nav>
+  );
+};

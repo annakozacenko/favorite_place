@@ -7,11 +7,44 @@
   padding: 24px;
 }
 
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
 .title {
   font-size: 32px;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton,
+.dangerButton {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.actionButton {
+  background: #eef2f7;
+  color: #1a1a1a;
+}
+
+.dangerButton {
+  background: #fdecea;
+  color: #c62828;
 }
 
 .text {

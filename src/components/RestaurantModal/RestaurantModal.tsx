@@ -1,18 +1,43 @@
+import { useEffect, useState } from "react";
 import { X, MapPin } from "lucide-react";
 import styles from "./RestaurantModal.module.css";
-import { categoriesMocks } from "../../mocks/mocks";
-import { useDispatch, useSelector } from "react-redux";
-import { addPlace } from "../../store/slices/placesSlice";
-import { useState } from "react";
+import { categoriesMocks, TCategories } from "../../mocks/mocks";
+import { useAppDispatch } from "../../store/hooks";
+import { addPlace, updatePlace, TPlace } from "../../store/slices/placesSlice";
 
 type RestaurantModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  place?: TPlace | null;
 };
 
-export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
-  const dispatch = useDispatch();
+export const RestaurantModal = ({
+  isOpen,
+  onClose,
+  place = null,
+}: RestaurantModalProps) => {
+  const dispatch = useAppDispatch();
+  const isEdit = Boolean(place);
 
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState<TCategories | "">("");
+  const [location, setLocation] = useState("");
+  const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (place) {
+      setName(place.name);
+      setCategory(place.category);
+      setLocation(place.location);
+      setNotes(place.notes);
+    } else {
+      setName("");
+      setCategory("");
+      setLocation("");
+      setNotes("");
+    }
+  }, [isOpen, place]);
 
   const resetForm = () => {
     setName("");
@@ -20,24 +45,35 @@ export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
     setLocation("");
     setNotes("");
   };
-  const handleAddRestaurant = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(
-      addPlace({
-        name,
-        category,
-        location,
-        notes,
-      })
-    );
-    onClose(); 
+    if (!category) return;
+
+    if (place) {
+      dispatch(
+        updatePlace({
+          id: place.id,
+          name,
+          category,
+          location,
+          notes,
+        })
+      );
+    } else {
+      dispatch(
+        addPlace({
+          name,
+          category,
+          location,
+          notes,
+        })
+      );
+    }
+
+    onClose();
     resetForm();
   };
-
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [location, setLocation] = useState("");
-  const [notes, setNotes] = useState("");
 
   if (!isOpen) return null;
 
@@ -45,14 +81,16 @@ export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Добавить новое место</h2>
+          <h2 className={styles.title}>
+            {isEdit ? "Редактировать место" : "Добавить новое место"}
+          </h2>
           <button onClick={onClose} className={styles.closeButton}>
             <X size={20} />
           </button>
         </div>
 
         <div className={styles.content}>
-          <form className={styles.form} onSubmit={handleAddRestaurant}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="restaurant-name">
                 Название*
@@ -73,15 +111,17 @@ export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
               <select
                 required
                 className={styles.select}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => setCategory(e.target.value as TCategories)}
                 value={category}
               >
                 <option value="" disabled>
                   Выберите категорию
                 </option>
-                {categoriesMocks.map((category, index) => {
-                  return <option key={index} value={category}>{category}</option>;
-                })}
+                {categoriesMocks.map((item, index) => (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                ))}
               </select>
             </div>
             <div className={styles.formGroup}>
@@ -97,6 +137,7 @@ export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
                   id="location"
                   placeholder="Адрес"
                   className={styles.inputWithIcon}
+                  value={location}
                   onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
@@ -109,12 +150,13 @@ export const RestaurantModal = ({ isOpen, onClose }: RestaurantModalProps) => {
                 id="restaurant-notes"
                 placeholder="Добавьте рекомендации или дополнительную информацию..."
                 className={styles.textarea}
+                value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-              ></textarea>
+              />
             </div>
             <div className={styles.footer}>
               <button type="submit" className={styles.buttonPrimary}>
-                Добавить
+                {isEdit ? "Сохранить" : "Добавить"}
               </button>
             </div>
           </form>

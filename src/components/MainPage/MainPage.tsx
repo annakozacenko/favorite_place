@@ -5,12 +5,12 @@ import { PlacePage } from "../../pages/PlacePage/PlacePage";
 import { DishPage } from "../../pages/DishPage/DishPage";
 import { VisitPage } from "../../pages/VisitPage/VisitPage";
 import { FormOfNewVisitPage } from "../../pages/NewVisitFormPage/NewVisitFormPage";
+import { ProfilePage } from "../../pages/ProfilePage/ProfilePage";
 import { Routes, Route } from "react-router-dom";
 
 function MainPage() {
   return (
-    <>
-      <AppHeader />
+    <div className={styles.app}>
       <main className={styles.main}>
         <Routes>
           <Route path="/" element={<FeedPlaces />} />
@@ -18,9 +18,11 @@ function MainPage() {
           <Route path="/dish/:id" element={<DishPage />} />
           <Route path="/visit/:id" element={<VisitPage />} />
           <Route path="/new-visit" element={<FormOfNewVisitPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </main>
-    </>
+      <AppHeader />
+    </div>
   );
 }
 

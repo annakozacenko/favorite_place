@@ -1,42 +1,55 @@
-.main {
+  .main {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 16px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 12px;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    margin-bottom: 0.75rem;
     width: 100%;
-}
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+  }
 
-.title {
+  .main:hover {
+    background: #fafafa;
+    border-color: rgba(0, 0, 0, 0.08);
+    transform: translateX(4px);
+  }
+
+  .title {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 1rem;
     color: #1a1a1a;
-    margin-right: 16px;
+    margin-right: 1rem;
     min-width: 120px;
-}
+    letter-spacing: -0.025em;
+  }
 
-.text {
-    color: #666;
-    margin-right: 24px;
-}
+  .text {
+    color: #6b7280;
+    margin-right: 1.5rem;
+    font-size: 0.9375rem;
+  }
 
-.rating {
+  .rating {
     display: flex;
     align-items: center;
-    color: #1a1a1a;
-    margin-right: 24px;
-}
+    color: #fbbf24;
+    margin-right: 1.5rem;
+  }
 
-.visits {
-    color: #666;
+  .visits {
+    color: #6b7280;
     margin-left: auto;
-}
+    font-size: 0.875rem;
+  }
 
-.comment {
-    color: #666;
+  .comment {
+    color: #6b7280;
     font-style: italic;
-    margin-left: 24px;
-}
+    margin-left: 1.5rem;
+    font-size: 0.875rem;
+  }

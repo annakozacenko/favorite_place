@@ -1,36 +1,29 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RestaurantModal } from "../../components/RestaurantModal/RestaurantModal";
 import { DishModal } from "../../components/DishModal/DishModal";
 import { StarRating } from "../../components/ui/StarRating";
-import {
-  Search,
-  Plus,
-  Camera,
-  MapPin,
-  Clock,
-  Calendar,
-  Users,
-  DollarSign,
-  Star,
-} from "lucide-react";
+import { Search, Plus, Calendar, Users, Camera } from "lucide-react";
 import styles from "./NewVisitFormPage.module.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { selectPlaces } from "../../store/slices/placesSlice";
 import { selectDishesByPlaceId } from "../../store/slices/dishesSlice";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { addVisit } from "../../store/slices/visitsSlice";
+import { updateDishRating } from "../../store/slices/dishesSlice";
+import { TSelectedDish } from "../../types/visit";
+import { MAX_VISIT_PHOTOS } from "../../types/photo";
+import { pickPhotoForVisit } from "../../services/photos";
+import { VisitPhoto } from "../../components/VisitPhoto/VisitPhoto";
 
-export type TSelectedDish = {
-  id: number;
-  name: string;
-  placeId: number;
-  rating: number;
-  visitNotes: string;
-  visitRating: number;
+type FormErrors = {
+  restaurant?: string;
+  date?: string;
+  dishes?: string;
 };
+
 export function FormOfNewVisitPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
@@ -42,13 +35,81 @@ export function FormOfNewVisitPage() {
 
   const [notes, setNotes] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
   const [companions, setCompanions] = useState("");
   const [overallRating, setOverallRating] = useState(0);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [isAddingPhoto, setIsAddingPhoto] = useState(false);
+  
+  // Save state management
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+  const [saveMessage, setSaveMessage] = useState<string>('');
+  const [isDraftSaved, setIsDraftSaved] = useState(false);
+  const [showDraftNotification, setShowDraftNotification] = useState(false);
+  
+  // Auto-save draft interval
+  let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+  
+  // Auto-save draft when form changes
+  const triggerAutoSave = () => {
+    if (autoSaveTimer) clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+      saveDraft();
+    }, 1000);
+  };
+  
+  // Save draft to localStorage
+  const saveDraft = () => {
+    const draft = {
+      selectedRestaurantId,
+      selectedDishes,
+      notes,
+      date,
+      companions,
+      overallRating,
+      photos,
+    };
+    localStorage.setItem('visitFormDraft', JSON.stringify(draft));
+    setIsDraftSaved(true);
+    setShowDraftNotification(true);
+    setTimeout(() => setShowDraftNotification(false), 3000);
+  };
+  
+  // Load draft from localStorage on mount
+  React.useEffect(() => {
+    const savedDraft = localStorage.getItem('visitFormDraft');
+    if (savedDraft) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        setSelectedRestaurantId(draft.selectedRestaurantId);
+        setSelectedDishes(draft.selectedDishes);
+        setNotes(draft.notes);
+        setDate(draft.date);
+        setCompanions(draft.companions);
+        setOverallRating(draft.overallRating);
+        setPhotos(draft.photos);
+      } catch (error) {
+        console.error('Failed to load draft:', error);
+      }
+    }
+  }, []);
+  
+  // Clear draft on successful save
+  const clearDraft = () => {
+    localStorage.removeItem('visitFormDraft');
+    setIsDraftSaved(false);
+  };
+  
+  // Reset save status
+  const resetSaveStatus = () => {
+    setSaveStatus('idle');
+    setSaveMessage('');
+  };
 
-  const restaurants = useSelector(selectPlaces);
-  // Получаем блюда только для выбранного ресторана
-  const dishes = useSelector((state) =>
+  const restaurants = useAppSelector(selectPlaces);
+  const dishes = useAppSelector((state) =>
     selectedRestaurantId !== null
       ? selectDishesByPlaceId(state, selectedRestaurantId)
       : []
@@ -63,6 +124,7 @@ export function FormOfNewVisitPage() {
         ...selectedDishes,
         { ...selectedDish, visitNotes: "", visitRating: 0 },
       ]);
+      triggerAutoSave();
     }
     e.target.value = ""; // Сбросить выбор
   };
@@ -70,20 +132,22 @@ export function FormOfNewVisitPage() {
   // Обработчик удаления блюда
   const handleRemoveDish = (dishId: number) => {
     setSelectedDishes(selectedDishes.filter((dish) => dish.id !== dishId));
+    triggerAutoSave();
   };
 
   // Обработчик изменения рейтинга для блюда
-const handleDishRatingChange = (dishId: number, rating: number) => {
-  setSelectedDishes((prevDishes) => {
-    const updatedDishes = prevDishes.map((dish) =>
-      dish.id === dishId ? { ...dish, visitRating: rating } : dish
-    );
-    const sum = updatedDishes.reduce((acc, dish) => acc + dish.visitRating, 0);
-    const average = updatedDishes.length > 0 ? sum / updatedDishes.length : 0;
-    setOverallRating(average);
-    return updatedDishes;
-  });
-};
+  const handleDishRatingChange = (dishId: number, rating: number) => {
+    setSelectedDishes((prevDishes) => {
+      const updatedDishes = prevDishes.map((dish) =>
+        dish.id === dishId ? { ...dish, visitRating: rating } : dish
+      );
+      const sum = updatedDishes.reduce((acc, dish) => acc + dish.visitRating, 0);
+      const average = updatedDishes.length > 0 ? sum / updatedDishes.length : 0;
+      setOverallRating(average);
+      return updatedDishes;
+    });
+    triggerAutoSave();
+  };
 
   // Обработчик изменения заметок для блюда
   const handleDishNotesChange = (dishId: number, notes: string) => {
@@ -92,29 +156,139 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
         dish.id === dishId ? { ...dish, visitNotes: notes } : dish
       )
     );
+    triggerAutoSave();
+  };
+
+  const parseCompanions = (value: string): string[] =>
+    value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+  // Enhanced validation with real-time feedback
+  const validateField = (field: keyof FormErrors): boolean => {
+    const errors = validateForm();
+    return !errors[field];
+  };
+
+  const validateForm = (): FormErrors => {
+    const errors: FormErrors = {};
+    if (selectedRestaurantId === null) {
+      errors.restaurant = "Выберите ресторан";
+    }
+    if (!date) {
+      errors.date = "Укажите дату визита";
+    }
+    if (selectedDishes.length === 0) {
+      errors.dishes = "Добавьте хотя бы одно блюдо";
+    }
+    if (
+      selectedDishes.length > 0 &&
+      selectedDishes.some((dish) => dish.visitRating <= 0)
+    ) {
+      errors.dishes = "Поставьте оценку каждому блюду";
+    }
+    return errors;
+  };
+
+  // Check if form is valid
+  const isFormValid = () => {
+    const errors = validateForm();
+    return Object.keys(errors).length === 0;
+  };
+
+  // Check if a specific field is valid
+  const isFieldValid = (field: keyof FormErrors): boolean => {
+    return !formErrors[field];
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const errors = validateForm();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
     if (selectedRestaurantId === null) return;
-    dispatch(
-      addVisit({
-        placeId: selectedRestaurantId,
-        date: date,
-        companions: companions,
-        rating: overallRating,
-        notes: notes,
-        dishes: selectedDishes,
-      })
-    );
-    // Сброс формы
-    setSelectedRestaurantId(null);
-    setSelectedDishes([]);
-    setNotes("");
-    setDate("");
-    setCompanions("");
-    setOverallRating(0);
-    navigate("/");
+
+    setIsSaving(true);
+    setSaveStatus('saving');
+    setSaveMessage('Сохранение...');
+
+    const companionsList = parseCompanions(companions);
+
+    try {
+      dispatch(
+        addVisit({
+          placeId: selectedRestaurantId,
+          date,
+          companions: companionsList.length > 0 ? companionsList : undefined,
+          rating: overallRating,
+          notes: notes || undefined,
+          dishes: selectedDishes,
+          photos: photos.length > 0 ? photos : undefined,
+        })
+      );
+
+      selectedDishes.forEach((dish) => {
+        if (dish.visitRating > 0) {
+          dispatch(updateDishRating({ id: dish.id, rating: dish.visitRating }));
+        }
+      });
+
+      // Clear draft on successful save
+      clearDraft();
+      
+      // Show success message
+      setSaveStatus('success');
+      setSaveMessage('Визит успешно сохранен!');
+      
+      // Reset form after delay
+      setTimeout(() => {
+        setSelectedRestaurantId(null);
+        setSelectedDishes([]);
+        setNotes("");
+        setDate("");
+        setCompanions("");
+        setOverallRating(0);
+        setPhotos([]);
+        setPhotoError(null);
+        setFormErrors({});
+        resetSaveStatus();
+        navigate(`/place/${selectedRestaurantId}`);
+      }, 1500);
+    } catch (error) {
+      setSaveStatus('error');
+      setSaveMessage('Ошибка при сохранении. Попробуйте еще раз.');
+      console.error('Failed to save visit:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleAddPhoto = async () => {
+    if (photos.length >= MAX_VISIT_PHOTOS) {
+      setPhotoError(`Максимум ${MAX_VISIT_PHOTOS} фото на визит`);
+      return;
+    }
+
+    setIsAddingPhoto(true);
+    setPhotoError(null);
+
+    try {
+      const photoRef = await pickPhotoForVisit();
+      setPhotos((prev) => [...prev, photoRef]);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Не удалось добавить фото";
+      if (!message.toLowerCase().includes("cancel")) {
+        setPhotoError(message);
+      }
+    } finally {
+      setIsAddingPhoto(false);
+    }
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -136,8 +310,10 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
                 const value = e.target.value;
                 setSelectedRestaurantId(value ? Number(value) : null);
                 setSelectedDishes([]);
+                setFormErrors((prev) => ({ ...prev, restaurant: undefined }));
               }}
-              className={styles.select}
+              className={`${styles.select} ${!isFieldValid('restaurant') ? styles.selectError : ''}`}
+              aria-invalid={Boolean(formErrors.restaurant)}
             >
               <option value="">Выберите ресторан</option>
               {restaurants.map((restaurant) => (
@@ -147,6 +323,9 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
               ))}
             </select>
           </div>
+          {formErrors.restaurant && (
+            <p className={styles.error}>{formErrors.restaurant}</p>
+          )}
 
           <button
             type="button"
@@ -175,11 +354,18 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
                 <input
                   type="date"
                   id="visit-date"
-                  className={styles.input}
-                  onChange={(e) => setDate(e.target.value)}
+                  className={`${styles.input} ${!isFieldValid('date') ? styles.selectError : ''}`}
+                  onChange={(e) => {
+                    setDate(e.target.value);
+                    setFormErrors((prev) => ({ ...prev, date: undefined }));
+                  }}
                   value={date}
+                  aria-invalid={Boolean(formErrors.date)}
                 />
               </div>
+              {formErrors.date && (
+                <p className={styles.error}>{formErrors.date}</p>
+              )}
             </div>
 
             {/* Компаньоны */}
@@ -227,6 +413,9 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
         {/* Выбор блюд */}
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Блюда</h2>
+          {formErrors.dishes && (
+            <p className={styles.error}>{formErrors.dishes}</p>
+          )}
           <div className={styles.totalRating}>
             <span>Общая оценка: {overallRating}</span>
           </div>
@@ -306,31 +495,58 @@ const handleDishRatingChange = (dishId: number, rating: number) => {
           </div>
         </div>
 
-{/* пока что отключено, т.к. негде хранить фото */}
-        {/* Фотографии */}
-        {/* <div className={styles.card}>
+        <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Фотографии</h2>
+          <p className={styles.photoHint}>
+            На телефоне — камера или галерея, в браузере — выбор файла.
+          </p>
 
-          <div className={styles.photoGrid}>
-            <div className={styles.photoItem}>
-              <img
-                src="https://images.pexels.com/photos/1579739/pexels-photo-1579739.jpeg"
-                alt="Food"
-                className={styles.photoImage}
-              />
+          {photos.length > 0 && (
+            <div className={styles.photoGrid}>
+              {photos.map((photoRef, index) => (
+                <VisitPhoto
+                  key={`${photoRef}-${index}`}
+                  photoRef={photoRef}
+                  onRemove={() => handleRemovePhoto(index)}
+                />
+              ))}
             </div>
-          </div>
+          )}
 
-          <button type="button" className={styles.buttonSecondary}>
+          <button
+            type="button"
+            className={styles.buttonSecondary}
+            onClick={() => void handleAddPhoto()}
+            disabled={isAddingPhoto || photos.length >= MAX_VISIT_PHOTOS}
+          >
             <Camera size={18} />
-            Добавить фото
+            {isAddingPhoto ? "Добавление..." : "Добавить фото"}
           </button>
-        </div> */}
+          {photoError && <p className={styles.error}>{photoError}</p>}
+        </div>
 
         {/* Кнопка сохранения */}
-        <button type="submit" className={styles.buttonPrimary}>
-          Сохранить визит
+        <button 
+          type="submit" 
+          className={styles.buttonPrimary}
+          disabled={isSaving || !isFormValid()}
+        >
+          {isSaving ? 'Сохранение...' : 'Сохранить визит'}
         </button>
+        
+        {/* Save status indicator */}
+        {saveStatus !== 'idle' && (
+          <div className={`${styles.saveStatus} ${styles[saveStatus]}`}>
+            {saveMessage}
+          </div>
+        )}
+        
+        {/* Draft notification */}
+        {showDraftNotification && (
+          <div className={styles.draftNotification}>
+            <span>Черновик сохранен</span>
+          </div>
+        )}
       </form>
 
       {/* Модальные окна */}
