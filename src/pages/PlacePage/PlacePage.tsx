@@ -54,6 +54,7 @@ export function PlacePage() {
               type="button"
               className={styles.actionButton}
               onClick={() => setIsEditOpen(true)}
+              aria-label="Изменить место"
             >
               Изменить
             </button>
@@ -61,16 +62,26 @@ export function PlacePage() {
               type="button"
               className={styles.dangerButton}
               onClick={handleDelete}
+              aria-label="Удалить место"
             >
               Удалить
             </button>
           </div>
         </div>
-        <p className={styles.meta}>
-          {place.category} · ★ {place.rating} · {place.visits}{" "}
-          {place.visits === 1 ? "визит" : "визитов"}
-        </p>
-        {place.location && <p className={styles.meta}>{place.location}</p>}
+        <span className={styles.categoryBadge}>{place.category}</span>
+        <div className={styles.metaRow}>
+          <span className={styles.meta}>
+            <span aria-hidden="true">★</span> {place.rating}
+          </span>
+          <span className={styles.meta}>
+            {place.visits} {place.visits === 1 ? "визит" : "визитов"}
+          </span>
+        </div>
+        {place.location && (
+          <div className={styles.metaRow}>
+            <span className={styles.meta}>{place.location}</span>
+          </div>
+        )}
         {place.notes && <p className={styles.notes}>{place.notes}</p>}
       </div>
 

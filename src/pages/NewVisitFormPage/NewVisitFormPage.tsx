@@ -41,17 +41,16 @@ export function FormOfNewVisitPage() {
   const [photos, setPhotos] = useState<string[]>([]);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [isAddingPhoto, setIsAddingPhoto] = useState(false);
-  
+
   // Save state management
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [saveMessage, setSaveMessage] = useState<string>('');
-  const [isDraftSaved, setIsDraftSaved] = useState(false);
   const [showDraftNotification, setShowDraftNotification] = useState(false);
-  
+
   // Auto-save draft interval
   let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
-  
+
   // Auto-save draft when form changes
   const triggerAutoSave = () => {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
@@ -59,7 +58,7 @@ export function FormOfNewVisitPage() {
       saveDraft();
     }, 1000);
   };
-  
+
   // Save draft to localStorage
   const saveDraft = () => {
     const draft = {
@@ -72,11 +71,10 @@ export function FormOfNewVisitPage() {
       photos,
     };
     localStorage.setItem('visitFormDraft', JSON.stringify(draft));
-    setIsDraftSaved(true);
     setShowDraftNotification(true);
     setTimeout(() => setShowDraftNotification(false), 3000);
   };
-  
+
   // Load draft from localStorage on mount
   React.useEffect(() => {
     const savedDraft = localStorage.getItem('visitFormDraft');
@@ -95,13 +93,12 @@ export function FormOfNewVisitPage() {
       }
     }
   }, []);
-  
+
   // Clear draft on successful save
   const clearDraft = () => {
     localStorage.removeItem('visitFormDraft');
-    setIsDraftSaved(false);
   };
-  
+
   // Reset save status
   const resetSaveStatus = () => {
     setSaveStatus('idle');
@@ -164,12 +161,6 @@ export function FormOfNewVisitPage() {
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
-
-  // Enhanced validation with real-time feedback
-  const validateField = (field: keyof FormErrors): boolean => {
-    const errors = validateForm();
-    return !errors[field];
-  };
 
   const validateForm = (): FormErrors => {
     const errors: FormErrors = {};
@@ -236,11 +227,11 @@ export function FormOfNewVisitPage() {
 
       // Clear draft on successful save
       clearDraft();
-      
+
       // Show success message
       setSaveStatus('success');
       setSaveMessage('Визит успешно сохранен!');
-      
+
       // Reset form after delay
       setTimeout(() => {
         setSelectedRestaurantId(null);
@@ -253,7 +244,7 @@ export function FormOfNewVisitPage() {
         setPhotoError(null);
         setFormErrors({});
         resetSaveStatus();
-        navigate(`/place/${selectedRestaurantId}`);
+        navigate('/');
       }, 1500);
     } catch (error) {
       setSaveStatus('error');
@@ -331,9 +322,10 @@ export function FormOfNewVisitPage() {
             type="button"
             onClick={() => setIsRestaurantModalOpen(true)}
             className={styles.buttonSecondary}
+            aria-label="Добавить новый ресторан"
           >
             <Plus size={18} />
-            Добавить новый ресторан
+            Добавить новый ресторан
           </button>
         </div>
 
@@ -389,12 +381,6 @@ export function FormOfNewVisitPage() {
             </div>
           </div>
 
-          {/* Overall Rating */}
-          {/* <div className={styles.formGroup}>
-            <label className={styles.label}>Overall Rating</label>
-            <StarRating size={24} />
-          </div> */}
-
           {/* Заметки */}
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="visit-notes">
@@ -434,13 +420,14 @@ export function FormOfNewVisitPage() {
                       }
                     />
                   </div>
-                  <button
-                    type="button"
-                    className={styles.deleteButton}
-                    onClick={() => handleRemoveDish(dish.id)}
-                  >
-                    <FaRegTrashCan size={18} />
-                  </button>
+            <button
+              type="button"
+              className={styles.deleteButton}
+              onClick={() => handleRemoveDish(dish.id)}
+              aria-label={`Удалить блюдо ${dish.name}`}
+            >
+              <FaRegTrashCan size={18} />
+            </button>
                 </div>
                 <input
                   type="text"
@@ -526,24 +513,25 @@ export function FormOfNewVisitPage() {
         </div>
 
         {/* Кнопка сохранения */}
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className={styles.buttonPrimary}
           disabled={isSaving || !isFormValid()}
+          aria-label="Сохранить визит"
         >
           {isSaving ? 'Сохранение...' : 'Сохранить визит'}
         </button>
-        
+
         {/* Save status indicator */}
         {saveStatus !== 'idle' && (
-          <div className={`${styles.saveStatus} ${styles[saveStatus]}`}>
+          <div className={`${styles.saveStatus} ${styles[saveStatus]}`} role="status" aria-live="polite">
             {saveMessage}
           </div>
         )}
-        
+
         {/* Draft notification */}
         {showDraftNotification && (
-          <div className={styles.draftNotification}>
+          <div className={styles.draftNotification} role="status" aria-live="polite">
             <span>Черновик сохранен</span>
           </div>
         )}

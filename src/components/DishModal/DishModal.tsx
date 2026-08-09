@@ -51,12 +51,12 @@ export function DishModal({
 
   return (
     <div className={styles.overlay}>
-      <div className={styles.modal}>
+      <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="dish-modal-title">
         <div className={styles.header}>
-          <h2 className={styles.title}>
+          <h2 id="dish-modal-title" className={styles.title}>
             {isEdit ? "Редактировать блюдо" : "Добавить блюдо"}
           </h2>
-          <button onClick={onClose} className={styles.closeButton}>
+          <button onClick={onClose} className={styles.closeButton} aria-label="Закрыть окно">
             <X size={20} />
           </button>
         </div>
@@ -83,6 +83,7 @@ export function DishModal({
                 type="button"
                 onClick={onClose}
                 className={styles.buttonSecondary}
+                aria-label="Отменить и закрыть"
               >
                 Отменить
               </button>

@@ -79,12 +79,12 @@ export const RestaurantModal = ({
 
   return (
     <div className={styles.overlay}>
-      <div className={styles.modal}>
+      <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="restaurant-modal-title">
         <div className={styles.header}>
-          <h2 className={styles.title}>
+          <h2 id="restaurant-modal-title" className={styles.title}>
             {isEdit ? "Редактировать место" : "Добавить новое место"}
           </h2>
-          <button onClick={onClose} className={styles.closeButton}>
+          <button onClick={onClose} className={styles.closeButton} aria-label="Закрыть окно">
             <X size={20} />
           </button>
         </div>

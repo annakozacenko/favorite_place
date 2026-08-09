@@ -10,12 +10,14 @@
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
-  padding: var(--space-lg) var(--space-md);
-  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-lg));
+  padding: var(--space-2xl) var(--space-lg);
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-3xl));
 }
 
 @media (min-width: 768px) {
   .main {
-    padding-top: var(--space-xl);
+    padding-top: var(--space-3xl);
+    padding-left: var(--space-2xl);
+    padding-right: var(--space-2xl);
   }
 }

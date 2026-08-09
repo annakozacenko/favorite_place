@@ -39,7 +39,7 @@ export function VisitPhoto({ photoRef, alt = "Фото визита", onRemove }
       {failed ? (
         <div className={styles.placeholder}>Нет превью</div>
       ) : src ? (
-        <img className={styles.image} src={src} alt={alt} />
+        <img className={styles.image} src={src} alt={alt} loading="lazy" />
       ) : (
         <div className={styles.placeholder}>…</div>
       )}

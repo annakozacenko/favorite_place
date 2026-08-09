@@ -1,205 +1,220 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(42, 39, 35, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+
+@media (min-width: 640px) {
   .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    animation: fadeIn 0.2s ease;
+    padding: var(--space-lg);
   }
+}
 
+.modal {
+  width: 100%;
+  max-width: 32rem;
+  max-height: 90vh;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
   .modal {
-    width: 100%;
-    max-width: 32rem;
-    background-color: white;
-    border-radius: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 12px 24px -8px rgba(0, 0, 0, 0.1);
-    animation: slideUp 0.3s ease;
+    border-radius: var(--radius-lg);
   }
+}
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 1.5rem 1rem 1.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
 
-  .title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    color: #1a1a1a;
-  }
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-snug);
+  color: var(--color-text);
+  line-height: var(--line-height-tight);
+}
 
-  .closeButton {
-    color: #9ca3af;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
-  }
+.closeButton {
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
 
-  .closeButton:hover {
-    color: #1a1a1a;
-    background-color: rgba(0, 0, 0, 0.05);
-  }
+.closeButton:hover,
+.closeButton:focus-visible {
+  color: var(--color-text);
+  background: var(--color-surface-muted);
+  outline: none;
+}
 
-  .content {
-    padding: 1.5rem;
-  }
+.content {
+  padding: var(--space-lg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
 
-  .formGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
 
-  .label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #1a1a1a;
-  }
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
 
-  .input {
-    width: 100%;
-    padding: 0.875rem 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 0.75rem;
-    background-color: #fafafa;
-    font-size: 0.9375rem;
-    transition: all 0.2s ease;
-    color: #1a1a1a;
-  }
+.input,
+.select {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  color: var(--color-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 44px;
+}
 
-  .input:focus {
-    outline: none;
-    border-color: #1a1a1a;
-    background-color: white;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
-  }
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
 
-  .select {
-    width: 100%;
-    padding: 0.875rem 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 0.75rem;
-    background-color: #fafafa;
-    font-size: 0.9375rem;
-    transition: all 0.2s ease;
-    color: #1a1a1a;
-    cursor: pointer;
-  }
+.inputWithIcon {
+  composes: input;
+  padding-left: 2.75rem;
+}
 
-  .select:focus {
-    outline: none;
-    border-color: #1a1a1a;
-    background-color: white;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
-  }
+.iconWrapper {
+  position: absolute;
+  top: 50%;
+  left: var(--space-md);
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .inputWithIcon {
-    composes: input;
-    padding-left: 2.5rem;
-  }
+.input:focus + .iconWrapper {
+  color: var(--color-accent);
+}
 
-  .iconWrapper {
-    position: absolute;
-    top: 50%;
-    left: 0.75rem;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: #9ca3af;
-    transition: color 0.2s ease;
-  }
+.inputGroup {
+  position: relative;
+}
 
-  .input:focus + .iconWrapper {
-    color: #1a1a1a;
-  }
+.textarea {
+  composes: input;
+  min-height: 120px;
+  resize: vertical;
+  padding: var(--space-md);
+}
 
-  .inputGroup {
-    position: relative;
-  }
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
 
-  .textarea {
-    composes: input;
-    min-height: 120px;
-    resize: vertical;
-  }
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-md) var(--space-xl);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
 
-  .footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    padding-top: 1rem;
-  }
+.buttonPrimary {
+  composes: button;
+  background: var(--color-text);
+  color: #fff;
+}
 
-  .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.875rem 1.5rem;
-    border-radius: 0.75rem;
-    font-weight: 500;
-    font-size: 0.9375rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
+.buttonPrimary:hover,
+.buttonPrimary:focus-visible {
+  background: var(--color-accent);
+  outline: none;
+}
 
-  .buttonPrimary {
-    composes: button;
-    background-color: #1a1a1a;
-    color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.buttonSecondary {
+  composes: button;
+  background: transparent;
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border);
+}
 
-  .buttonPrimary:hover {
-    background-color: #333;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  .buttonSecondary {
-    composes: button;
-    background-color: transparent;
-    color: #1a1a1a;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .buttonSecondary:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-    border-color: rgba(0, 0, 0, 0.15);
-  }
+.buttonSecondary:hover,
+.buttonSecondary:focus-visible {
+  background: var(--color-surface-muted);
+  border-color: var(--color-accent);
+  outline: none;
+}

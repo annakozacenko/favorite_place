@@ -1,27 +1,41 @@
 .container {
   display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .starButton {
-  margin-right: 0.25rem;
-  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--space-xs);
+  margin: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.2s ease;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
 }
 
-.starButton:focus {
-  outline: none;
+.starButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .starActive {
-  color: #ff7f50; /* coral color */
+  color: var(--color-star);
 }
 
 .starInactive {
-  color: #d1d5db; /* gray-300 */
+  color: var(--color-text-muted);
 }
 
 .rating {
-  margin-left: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #4b5563; /* gray-600 */
+  margin-left: var(--space-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
 }

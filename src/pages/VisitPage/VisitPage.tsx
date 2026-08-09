@@ -85,20 +85,22 @@ export function VisitPage() {
           {place ? ` · ${place.name}` : ""}
         </h1>
         <div className={styles.actions}>
-          <button
-            type="button"
-            className={styles.actionButton}
-            onClick={() => setIsEditing((prev) => !prev)}
-          >
-            {isEditing ? "Отмена" : "Изменить"}
-          </button>
-          <button
-            type="button"
-            className={styles.dangerButton}
-            onClick={handleDelete}
-          >
-            Удалить
-          </button>
+            <button
+              type="button"
+              className={styles.actionButton}
+              onClick={() => setIsEditing((prev) => !prev)}
+              aria-label={isEditing ? "Отменить редактирование" : "Редактировать визит"}
+            >
+              {isEditing ? "Отмена" : "Изменить"}
+            </button>
+            <button
+              type="button"
+              className={styles.dangerButton}
+              onClick={handleDelete}
+              aria-label="Удалить визит"
+            >
+              Удалить
+            </button>
         </div>
       </div>
 
@@ -147,8 +149,9 @@ export function VisitPage() {
         <>
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Оценка</h2>
-            <div className={styles.comment}>
-              <p className={styles.text}>{visit.rating}</p>
+            <div className={styles.ratingDisplay}>
+              <span aria-hidden="true">★</span>
+              <span>{visit.rating}</span>
             </div>
           </div>
 
@@ -164,8 +167,10 @@ export function VisitPage() {
           {companionsText && (
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Компаньоны</h2>
-              <div className={styles.comment}>
-                <p className={styles.text}>{companionsText}</p>
+              <div className={styles.companionsList}>
+                {companionsText.split(", ").map((companion, i) => (
+                  <span key={i} className={styles.companionTag}>{companion}</span>
+                ))}
               </div>
             </div>
           )}
@@ -175,9 +180,12 @@ export function VisitPage() {
       {visit.photos && visit.photos.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Фотографии</h2>
-          <div className={styles.photoGrid}>
+          <div className={styles.photoCarousel}>
             {visit.photos.map((photoRef, index) => (
-              <VisitPhoto key={`${photoRef}-${index}`} photoRef={photoRef} />
+              <VisitPhoto
+                key={`${photoRef}-${index}`}
+                photoRef={photoRef}
+              />
             ))}
           </div>
         </div>
